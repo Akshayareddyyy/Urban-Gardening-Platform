@@ -5,10 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
-import { searchPlants } from '@/lib/perenual-api';
+import { searchPlants } from '@/lib/plant-api-service'; // Updated import
 import { Loader2, SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardFooter } from '@/components/ui/card'; // Added import
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 export function PlantSearch() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,15 +16,25 @@ export function PlantSearch() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [initialLoad, setInitialLoad] = useState(true);
+  const [searched, setSearched] = useState(false); // To track if a search has been performed
 
-  const handleSearch = async (query: string) => {
+  const performSearch = async (query: string) => {
+    if (!query.trim() && !initialLoad) { // Don't search if query is empty unless it's initial load
+      setResults([]);
+      setSearched(true); // Mark as searched to show "No plants found" if appropriate
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
+    setSearched(true); // A search attempt is made
     try {
+      // For initial load, we might fetch some default plants or leave it empty
+      // For now, an empty initial query will also go through searchPlants which might return nothing or defaults based on its logic.
       const data = await searchPlants(query);
       setResults(data);
     } catch (error) {
       console.error('Failed to search plants:', error);
-      // Handle error display if needed
+      setResults([]); // Clear results on error
     } finally {
       setIsLoading(false);
       if (initialLoad) setInitialLoad(false);
@@ -32,21 +42,37 @@ export function PlantSearch() {
   };
 
   useEffect(() => {
-    // Initial load of some plants or handle empty state
-    handleSearch('');
-  }, []);
+    // For initial load, we can fetch some popular plants or featured items.
+    // Let's fetch with an empty query, which might be handled by searchPlants to return featured items or nothing.
+    // Or, specify a default search like "popular houseplants"
+    performSearch(''); // Or a default query like "rose"
+  }, []); // Runs once on mount
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    startTransition(() => {
-      handleSearch(e.target.value);
-    });
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    // Debounced search or search on submit is usually better for APIs
+    // For now, let's keep it simple: search on submit or when input is cleared
+    if (!newSearchTerm.trim()) {
+        startTransition(() => {
+            performSearch(''); // Or clear results: setResults([]); setSearched(false);
+        });
+    }
   };
   
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleSearch(searchTerm);
+    if (searchTerm.trim()) {
+        startTransition(() => {
+            performSearch(searchTerm);
+        });
+    } else {
+        // Handle empty search submission if needed, e.g., show all or clear
+        performSearch('');
+    }
   };
+  
+  const showSkeletons = initialLoad || (isLoading && results.length === 0);
 
   return (
     <div className="space-y-8">
@@ -65,9 +91,9 @@ export function PlantSearch() {
         </Button>
       </form>
 
-      {initialLoad || (isLoading && results.length === 0) ? (
+      {showSkeletons ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }).map((_, index) => (
+          {Array.from({ length: 4 }).map((_, index) => ( // Reduced skeleton count
             <Card key={index} className="flex flex-col">
               <Skeleton className="h-48 w-full rounded-t-lg" />
               <CardContent className="p-4 flex-grow space-y-2">
@@ -89,14 +115,14 @@ export function PlantSearch() {
             <PlantCard key={plant.id} plant={plant} />
           ))}
         </div>
-      ) : (
+      ) : searched && !isLoading ? ( // Only show "No Plants Found" if a search has been attempted
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold text-foreground mb-2">No Plants Found</h2>
           <p className="text-muted-foreground">
             Try adjusting your search terms or explore our suggestions.
           </p>
         </div>
-      )}
+      ) : null }
     </div>
   );
 }

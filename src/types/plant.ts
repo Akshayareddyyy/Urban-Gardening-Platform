@@ -1,39 +1,35 @@
 export interface PlantImage {
-  thumbnail: string;
-  regular_url: string;
-  original_url: string;
+  thumbnail?: string;
+  regular_url?: string; // Can be placeholder or data URI
+  original_url?: string; // Can be placeholder or data URI
+  imageDataUri?: string; // For GenAI generated images
   license_name?: string;
   license_url?: string;
 }
 
 export interface Plant {
-  id: number;
+  id: string; // Slugified common_name
   common_name: string;
-  scientific_name: string[];
+  scientific_name: string[]; // Gemini might return a single string, adapt in service layer
   other_name?: string[];
-  cycle: string; // e.g., Perennial, Annual, Biennial
-  watering: string; // e.g., Average, Minimum, Frequent
-  sunlight: string[] | string; // e.g., ["full sun", "part shade"] or "Full sun"
-  type?: string; // e.g. Tree, Shrub, Herb
-  hardiness?: { min: string; max: string }; // Temperature related
-  soil?: string[]; // e.g. Loamy, Sandy
-  propagation?: string[];
-  flowers?: boolean;
-  flower_color?: string;
-  flower_season?: string; // Custom field, may need to infer
-  fruiting_season?: string; // Custom field
+  cycle: string;
+  watering: string;
+  sunlight: string[] | string;
+  type?: string;
   description?: string;
   default_image?: PlantImage | null;
   care_level?: string;
   growth_rate?: string;
-  maintenance?: string;
-  problem?: string; // pests/diseases
-  dimension?: string; // e.g. "Height: 10-15 feet"
+  // Fields like hardiness, soil, propagation are harder for GenAI to provide consistently structured.
+  // Keep core fields.
+  image_prompt?: string; // For generating an image if not directly provided
 }
 
 export interface PlantSummary extends Pick<Plant, 'id' | 'common_name' | 'scientific_name' | 'cycle' | 'watering' | 'sunlight' | 'default_image'> {}
 
-// For the GenAI suggestions
+// For the GenAI suggestions (from suggest-plants.ts flow)
+// This type definition is specific to the suggestPlants flow and should ideally live with it or be imported if truly shared.
+// For now, keeping it here as it was, but noting that the main Plant/PlantSummary are changing.
 export interface PlantSuggestion {
   name: string;
   description: string;
