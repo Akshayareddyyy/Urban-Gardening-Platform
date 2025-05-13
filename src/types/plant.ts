@@ -1,33 +1,54 @@
 export interface PlantImage {
-  thumbnail?: string; // From OpenFarm: e.g., picture.attributes.thumbnail_url
-  regular_url?: string; // From OpenFarm: e.g., crop.attributes.main_image_path or picture.attributes.image_url
-  original_url?: string; // From OpenFarm: e.g., crop.attributes.main_image_path or picture.attributes.image_url
-  imageDataUri?: string | null; // Kept for potential future use, but OpenFarm is primary
+  thumbnail?: string;
+  regular_url?: string;
+  original_url?: string;
+  medium_url?: string; // Added for Perenual
+  small_url?: string; // Added for Perenual
+  license?: number; // Added for Perenual
   license_name?: string;
   license_url?: string;
+  imageDataUri?: string | null; // Kept for potential future use with other sources
 }
 
 export interface Plant {
-  id: string; // OpenFarm slug
-  common_name: string; // OpenFarm attributes.name
-  scientific_name: string[]; // OpenFarm attributes.binomial_name (singular, adapt to array)
-  other_name?: string[]; // OpenFarm attributes.common_names
-  cycle: string; // Inferred from OpenFarm tags_array or default
-  watering: string; // Inferred from OpenFarm description/sowing_method or default
-  sunlight: string[] | string; // OpenFarm attributes.sun_requirements
-  type?: string; // Inferred from OpenFarm tags_array (e.g., 'Herb', 'Vegetable') or taxon
-  description?: string; // OpenFarm attributes.description
-  default_image?: PlantImage | null; // Derived from OpenFarm attributes.main_image_path or pictures relationship
-  care_level?: string; // Not directly in OpenFarm, default to 'N/A' or infer
-  growth_rate?: string; // Not directly in OpenFarm, default to 'N/A' or infer
-  // OpenFarm specific fields that might be useful
-  svg_icon?: string | null; // OpenFarm attributes.svg_icon
-  tags_array?: string[] | null; // OpenFarm attributes.tags_array, useful for inferences
+  id: number; // Changed to number for Perenual API
+  common_name: string;
+  scientific_name: string[]; // Perenual provides an array
+  other_name?: string[];
+  cycle: string;
+  watering?: string; // Perenual provides this as a string (e.g., "Average")
+  sunlight: string[]; // Perenual provides an array (e.g., ["full sun", "part shade"])
+  type?: string; // e.g., 'Perennial', 'Herb', 'Shrub'
+  description?: string;
+  default_image?: PlantImage | null;
+  care_level?: string; // Perenual provides this
+  growth_rate?: string; // Perenual provides this
+  // Perenual specific or commonly useful fields
+  dimensions?: {
+    type?: string | null;
+    min_value?: number;
+    max_value?: number;
+    unit?: string;
+  };
+  hardiness?: {
+    min: string; // Usually a number string like "7"
+    max: string; // Usually a number string like "10"
+  };
+  watering_general_benchmark?: { // More detailed watering info
+    value: string; // e.g., "5-7"
+    unit: string; // e.g., "days"
+  };
+  maintenance?: string; // From Perenual
+  medicinal?: boolean; // From Perenual
+  poisonous_to_humans?: number; // 0 or 1 from Perenual
+  poisonous_to_pets?: number; // 0 or 1 from Perenual
+  drought_tolerant?: boolean;
+  indoor?: boolean;
 }
 
 export interface PlantSummary extends Pick<Plant, 'id' | 'common_name' | 'scientific_name' | 'cycle' | 'watering' | 'sunlight' | 'default_image'> {}
 
-// For the GenAI suggestions (from suggest-plants.ts flow)
+// For the GenAI suggestions (from suggest-plants.ts flow) - remains unchanged
 export interface PlantSuggestion {
   name: string;
   description: string;

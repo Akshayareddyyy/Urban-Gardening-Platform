@@ -11,8 +11,9 @@ interface PlantCardProps {
 }
 
 export function PlantCard({ plant }: PlantCardProps) {
-  const imageUrl = plant.default_image?.regular_url || plant.default_image?.original_url || plant.default_image?.thumbnail;
-  const linkHref = `/plants/${plant.id}`; // plant.id is now the OpenFarm slug
+  const imageUrl = plant.default_image?.regular_url || plant.default_image?.original_url || plant.default_image?.medium_url || plant.default_image?.small_url || plant.default_image?.thumbnail;
+  // plant.id is now a number from Perenual API, convert to string for URL
+  const linkHref = `/plants/${String(plant.id)}`; 
 
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg">
@@ -46,13 +47,13 @@ export function PlantCard({ plant }: PlantCardProps) {
           {Array.isArray(plant.scientific_name) ? plant.scientific_name.join(', ') : plant.scientific_name}
         </p>
         <div className="space-y-2 text-sm">
-          {plant.sunlight && plant.sunlight !== 'N/A' && (
+          {plant.sunlight && (Array.isArray(plant.sunlight) ? plant.sunlight.join('') : plant.sunlight).toLowerCase() !== 'n/a' && (
             <div className="flex items-center gap-2">
               <Sun className="w-4 h-4 text-accent" />
               <span>{Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : plant.sunlight}</span>
             </div>
           )}
-          {plant.watering && plant.watering !== 'N/A' && (
+          {plant.watering && plant.watering.toLowerCase() !== 'n/a' && (
              <div className="flex items-center gap-2">
               <Droplets className="w-4 h-4 text-accent" />
               <span>{plant.watering}</span>

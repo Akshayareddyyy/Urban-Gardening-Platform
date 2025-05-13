@@ -3,19 +3,27 @@ import { PlantDetailDisplay } from '@/components/plant/plant-detail-display';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, ServerCrash } from 'lucide-react';
+import { ArrowLeft, ServerCrash, HelpCircle } from 'lucide-react';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type PlantDetailPageProps = {
-  params: { id: string }; // id here is the OpenFarm plant slug
+  params: { id: string }; // id from URL is a string
 };
 
 export async function generateMetadata(
   { params }: PlantDetailPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const plantSlug = params.id;
-  const plant = await getPlantDetails(plantSlug);
+  const plantId = parseInt(params.id, 10);
+  
+  if (isNaN(plantId)) {
+    return {
+      title: 'Invalid Plant ID | Urban Gardening',
+      description: 'The plant ID provided is not valid.',
+    }
+  }
+
+  const plant = await getPlantDetails(plantId);
   
   return {
     title: plant ? `${plant.common_name} | Urban Gardening` : 'Plant Details | Urban Gardening',
@@ -25,10 +33,9 @@ export async function generateMetadata(
 
 
 export default async function PlantDetailPage({ params }: PlantDetailPageProps) {
-  const plantSlug = params.id;
+  const plantIdStr = params.id;
 
-  if (!plantSlug) {
-    // This case should ideally not be hit if routing is set up correctly.
+  if (!plantIdStr) {
     return (
       <div className="text-center py-10">
         <Alert variant="destructive" className="max-w-md mx-auto">
@@ -45,7 +52,26 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
     );
   }
 
-  const plant = await getPlantDetails(plantSlug);
+  const plantId = parseInt(plantIdStr, 10);
+
+  if (isNaN(plantId)) {
+     return (
+      <div className="text-center py-10">
+        <Alert variant="destructive" className="max-w-md mx-auto">
+           <HelpCircle className="h-5 w-5" />
+          <AlertTitle>Error: Invalid Plant ID</AlertTitle>
+          <AlertDescription>The plant ID "{plantIdStr}" is not a valid format.</AlertDescription>
+        </Alert>
+        <Button asChild variant="link" className="mt-4">
+          <Link href="/">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const plant = await getPlantDetails(plantId);
 
   if (!plant) {
     return (
@@ -54,8 +80,9 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
           <ServerCrash className="h-5 w-5" />
           <AlertTitle>Plant Not Found</AlertTitle>
           <AlertDescription>
-            Sorry, we couldn't find details for the plant identified by "{plantSlug}". 
-            It might be a rare species, not yet in our OpenFarm database, or there was an issue fetching its information.
+            Sorry, we couldn't find details for the plant ID "{plantIdStr}". 
+            It might be a rare species, not in our database, or there was an issue fetching its information.
+            Please ensure your Perenual API key is correctly configured if this issue persists.
           </AlertDescription>
         </Alert>
          <Button asChild variant="link" className="mt-4">

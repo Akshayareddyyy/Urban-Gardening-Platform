@@ -11,14 +11,21 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       // Data URIs don't need to be listed here.
-      // If picsum.photos is still used for ANY placeholders, keep this.
-      // Otherwise, it can be removed. For safety, keeping it if placeholders might still use it.
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
+        hostname: 'perenual.com',
         port: '',
         pathname: '/**',
       },
+      // Remove picsum.photos if no longer used for placeholders.
+      // Keeping it for safety if some placeholders might still use it.
+      // If definitely not used, this block can be removed.
+      // {
+      //   protocol: 'https',
+      //   hostname: 'picsum.photos',
+      //   port: '',
+      //   pathname: '/**',
+      // },
     ],
   },
 };
