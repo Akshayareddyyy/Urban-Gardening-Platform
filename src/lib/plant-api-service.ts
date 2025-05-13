@@ -1,3 +1,4 @@
+
 'use server';
 import type { Plant, PlantSummary, PlantImage } from '@/types/plant';
 
@@ -106,9 +107,9 @@ function mapToPlantDetail(
     if (picture && picture.attributes) {
       const picAttrs = picture.attributes as OpenFarmPictureAttributes;
       mainImage = {
-        thumbnail: picAttrs.thumbnail_url,
-        regular_url: picAttrs.image_url, // or large_url
-        original_url: picAttrs.image_url,
+        thumbnail: getFullImageUrl(picAttrs.thumbnail_url),
+        regular_url: getFullImageUrl(picAttrs.image_url), // or large_url
+        original_url: getFullImageUrl(picAttrs.image_url),
       };
     }
   }
@@ -135,21 +136,30 @@ function mapToPlantDetail(
 
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
   if (!query.trim()) {
+    // OpenFarm API might return all crops for empty query, so explicitly return empty array for better UX.
     return [];
   }
   try {
-    // Using 'query' for full-text search as 'filter[common_names]' might be too restrictive
-    const response = await fetch(`${OPENFARM_API_BASE_URL}/crops?query=${encodeURIComponent(query)}`);
+    const response = await fetch(`${OPENFARM_API_BASE_URL}/crops?filter[query]=${encodeURIComponent(query)}`);
     if (!response.ok) {
-      console.error(`OpenFarm API error (searchPlants): ${response.status} ${response.statusText}`);
+      console.error(`OpenFarm API error (searchPlants for "${query}"): ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
-      console.error("Error body:", errorBody);
+      console.error("Error body (searchPlants non-ok response):", errorBody);
       return [];
     }
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || (!contentType.includes('application/json') && !contentType.includes('application/vnd.api+json'))) {
+      console.error(`OpenFarm API error (searchPlants for "${query}"): Expected JSON response, but got ${contentType}`);
+      const textBody = await response.text();
+      console.error("Unexpected response body (searchPlants HTML/text):", textBody);
+      return [];
+    }
+
     const result = await response.json() as OpenFarmListResponse<OpenFarmCropAttributes>;
     return result.data.map(mapToPlantSummary);
   } catch (error) {
-    console.error('Failed to search plants from OpenFarm:', error);
+    console.error(`Failed to search plants "${query}" from OpenFarm:`, error);
     return [];
   }
 }
@@ -161,15 +171,28 @@ export async function getPlantDetails(plantSlug: string): Promise<Plant | null> 
   try {
     // Request to include pictures for better image quality
     const response = await fetch(`${OPENFARM_API_BASE_URL}/crops/${plantSlug}?include=pictures`);
+    
     if (!response.ok) {
       console.error(`OpenFarm API error (getPlantDetails for ${plantSlug}): ${response.status} ${response.statusText}`);
-      const errorBody = await response.text();
-      console.error("Error body:", errorBody);
+      // It's important to consume the response body to free up resources, even if it's an error.
+      const errorBody = await response.text(); 
+      console.error("Error body (getPlantDetails non-ok response):", errorBody);
       return null;
     }
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || (!contentType.includes('application/json') && !contentType.includes('application/vnd.api+json'))) {
+      console.error(`OpenFarm API error (getPlantDetails for ${plantSlug}): Expected JSON, but got ${contentType}`);
+      // Consume and log the body if it's not JSON
+      const textBody = await response.text();
+      console.error("Unexpected response body (getPlantDetails HTML/text):", textBody);
+      return null;
+    }
+    
     const result = await response.json() as OpenFarmDetailResponse<OpenFarmCropAttributes>;
     return mapToPlantDetail(result.data, result.included);
   } catch (error) {
+    // This catch block will handle network errors or errors from response.json() if it still fails (e.g., malformed JSON)
     console.error(`Failed to get plant details for "${plantSlug}" from OpenFarm:`, error);
     return null;
   }
