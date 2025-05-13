@@ -39,7 +39,10 @@ const growthFocusOptions = [
 const formSchema = z.object({
   plantType: z.string().min(3, { message: 'Plant type must be at least 3 characters.' }).max(100, {message: 'Plant type description is too long (max 100 characters).'}),
   growthFocus: z.string().min(3, { message: 'Please select a growth focus.' }),
-  soilDescription: z.string().optional().describe('A brief description of the soil, if known (e.g., "sandy and drains quickly", "heavy clay", "using standard potting mix", "unknown garden soil").').max(150, {message: "Soil description is too long (max 150 characters)."}),
+  soilDescription: z.string()
+    .max(150, {message: "Soil description is too long (max 150 characters)."})
+    .optional()
+    .describe('A brief description of the soil, if known (e.g., "sandy and drains quickly", "heavy clay", "using standard potting mix", "unknown garden soil").'),
 });
 
 type FertilizerFormProps = {
