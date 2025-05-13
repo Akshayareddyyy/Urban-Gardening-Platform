@@ -8,6 +8,7 @@ import type { PlantSummary } from '@/types/plant';
 import { searchPlants } from '@/lib/perenual-api';
 import { Loader2, SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardFooter } from '@/components/ui/card'; // Added import
 
 export function PlantSearch() {
   const [searchTerm, setSearchTerm] = useState('');
