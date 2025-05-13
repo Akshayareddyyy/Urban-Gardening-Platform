@@ -19,6 +19,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Send } from 'lucide-react';
 import { useState } from 'react';
+import { db } from '@/lib/firebase'; // Import db instance
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore functions
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(100, {message: "Name cannot exceed 100 characters."}),
@@ -43,16 +45,38 @@ export function ContactForm() {
 
   const handleSubmit = async (values: ContactFormValues) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    console.log('Contact form submitted:', values);
-    
-    setIsLoading(false);
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you shortly.",
-    });
-    form.reset();
+    if (!db) {
+      console.error("Firestore database is not initialized.");
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: "The messaging service is not configured. Please contact support.",
+      });
+      setIsLoading(false);
+      return;
+    }
+    try {
+      // Add a new document with a generated id to the "contacts" collection.
+      await addDoc(collection(db, "contacts"), {
+        ...values,
+        submittedAt: serverTimestamp(), // Add a server timestamp
+      });
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you shortly.",
+      });
+      form.reset();
+    } catch (error) {
+      console.error("Error adding document to Firestore: ", error);
+      toast({
+        variant: "destructive",
+        title: "Submission Error",
+        description: "There was a problem sending your message. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
