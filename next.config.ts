@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -17,15 +18,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
-      // Remove picsum.photos if no longer used for placeholders.
-      // Keeping it for safety if some placeholders might still use it.
-      // If definitely not used, this block can be removed.
-      // {
-      //   protocol: 'https',
-      //   hostname: 'picsum.photos',
-      //   port: '',
-      //   pathname: '/**',
-      // },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
