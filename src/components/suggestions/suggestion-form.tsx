@@ -16,11 +16,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { SuggestPlantsInput } from '@/ai/flows/suggest-plants';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 const formSchema = z.object({
-  climate: z.string().min(3, { message: 'Climate must be at least 3 characters.' }).max(100),
-  availableSpace: z.string().min(3, { message: 'Available space description must be at least 3 characters.' }).max(200),
+  climate: z.string().min(3, { message: 'Climate must be at least 3 characters.' }).max(100, {message: 'Climate description is too long (max 100 characters).'}),
+  availableSpace: z.string().min(3, { message: 'Available space description must be at least 3 characters.' }).max(200, {message: 'Available space description is too long (max 200 characters).'}),
 });
 
 type SuggestionFormProps = {
@@ -43,15 +43,15 @@ export function SuggestionForm({ onSubmit, isLoading }: SuggestionFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 max-w-xl mx-auto p-6 bg-card rounded-lg shadow-lg">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 max-w-xl mx-auto p-6 bg-card rounded-lg shadow-lg border">
         <FormField
           control={form.control}
           name="climate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">Your Climate</FormLabel>
+              <FormLabel className="text-lg font-semibold text-primary">Your Climate</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Temperate with warm summers" {...field} className="text-base"/>
+                <Input placeholder="e.g., Temperate with warm summers and mild winters" {...field} className="text-base"/>
               </FormControl>
               <FormDescription>
                 Describe the general climate of your location (e.g., tropical, arid, temperate with cold winters).
@@ -65,29 +65,32 @@ export function SuggestionForm({ onSubmit, isLoading }: SuggestionFormProps) {
           name="availableSpace"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">Available Space</FormLabel>
+              <FormLabel className="text-lg font-semibold text-primary">Available Space</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="e.g., Small sunny balcony, large shady backyard patch"
-                  className="resize-none text-base"
+                  placeholder="e.g., Small sunny balcony (10 sq ft), large shady backyard patch (100 sq ft), indoor windowsill with indirect light"
+                  className="resize-none text-base min-h-[100px]"
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                Briefly describe the space you have for plants (size, light conditions).
+                Briefly describe the space you have for plants (size, light conditions, indoor/outdoor).
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading} className="w-full text-base py-3">
+        <Button type="submit" disabled={isLoading} className="w-full text-base py-3 h-12">
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Getting Suggestions...
+              Conjuring Plant Ideas...
             </>
           ) : (
-            'Get Plant Suggestions'
+            <>
+              <Sparkles className="mr-2 h-5 w-5" />
+              Get Plant Suggestions
+            </>
           )}
         </Button>
       </form>

@@ -22,11 +22,21 @@ export default function SuggestionsPage() {
     setLastInput(data);
     try {
       const result = await suggestPlants(data);
-      setSuggestions(result.suggestions);
-      toast({
-        title: "Suggestions Ready!",
-        description: `We found ${result.suggestions.length} plant ideas for you.`,
-      });
+      if (result && result.suggestions) {
+        setSuggestions(result.suggestions);
+        toast({
+          title: "Suggestions Ready!",
+          description: `We found ${result.suggestions.length} plant ideas for you.`,
+        });
+      } else {
+        setSuggestions([]);
+        setError('Received an unexpected response from the suggestion service. Please try again.');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not process suggestions.",
+        });
+      }
     } catch (err) {
       console.error('Failed to get suggestions:', err);
       setError('Sorry, we couldn\'t fetch suggestions at this time. Please try again later.');
@@ -59,14 +69,21 @@ export default function SuggestionsPage() {
 
       <SuggestionForm onSubmit={handleGetSuggestions} isLoading={isLoading} />
 
-      {error && (
+      {isLoading && (
+        <div className="flex justify-center items-center py-10">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="ml-4 text-lg text-muted-foreground">Generating your plant suggestions...</p>
+        </div>
+      )}
+
+      {error && !isLoading && (
         <Alert variant="destructive" className="max-w-xl mx-auto">
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>Error Fetching Suggestions</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {suggestions.length > 0 && (
+      {!isLoading && !error && suggestions.length > 0 && (
         <div className="mt-12">
           <SuggestionList suggestions={suggestions} />
           <div className="text-center mt-8">
@@ -76,12 +93,17 @@ export default function SuggestionsPage() {
               ) : (
                 <RefreshCw className="mr-2 h-5 w-5" />
               )}
-              Get New Suggestions
+              Get New Suggestions With Same Criteria
             </Button>
           </div>
         </div>
       )}
-       {suggestions.length === 0 && !isLoading && !error && (
+       {!isLoading && !error && suggestions.length === 0 && lastInput && (
+         <div className="text-center py-8 text-muted-foreground mt-8">
+            <p className="text-lg">No suggestions found for the given criteria. Try being more general or different keywords.</p>
+         </div>
+       )}
+       {!isLoading && !error && suggestions.length === 0 && !lastInput && (
          <div className="text-center py-8 text-muted-foreground mt-8">
             <p className="text-lg">Enter your details above to discover plants tailored for you!</p>
          </div>

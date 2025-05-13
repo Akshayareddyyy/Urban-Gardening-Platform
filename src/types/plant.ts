@@ -48,7 +48,7 @@ export interface Plant {
 
 export interface PlantSummary extends Pick<Plant, 'id' | 'common_name' | 'scientific_name' | 'cycle' | 'watering' | 'sunlight' | 'default_image'> {}
 
-// For the GenAI suggestions (from suggest-plants.ts flow) - remains unchanged
+// For the GenAI suggestions (from suggest-plants.ts flow)
 export interface PlantSuggestion {
   name: string;
   description: string;

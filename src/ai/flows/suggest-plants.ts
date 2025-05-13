@@ -1,4 +1,3 @@
-// src/ai/flows/suggest-plants.ts
 'use server';
 /**
  * @fileOverview Personalized plant suggestions based on climate and available space.
@@ -12,18 +11,21 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SuggestPlantsInputSchema = z.object({
-  climate: z.string().describe('The climate of the user, e.g., temperate, tropical, arid.'),
-  availableSpace: z.string().describe('The available space for plants, e.g., small balcony, large garden.'),
+  climate: z.string().describe('The climate of the user, e.g., temperate, tropical, arid, continental with cold winters and hot summers.'),
+  availableSpace: z.string().describe('The available space for plants, e.g., small sunny balcony, large shady garden, indoor windowsill with indirect light.'),
 });
 export type SuggestPlantsInput = z.infer<typeof SuggestPlantsInputSchema>;
 
+const PlantSuggestionSchema = z.object({
+  name: z.string().describe('The common name of the suggested plant.'),
+  description: z.string().describe('A brief description of the plant (2-3 sentences) highlighting why it is suitable for the user\'s conditions, its key characteristics, and basic care tips if concise.'),
+});
+
 const SuggestPlantsOutputSchema = z.object({
-  suggestions: z.array(
-    z.object({
-      name: z.string().describe('The common name of the plant.'),
-      description: z.string().describe('A brief description of the plant and why it is suitable.'),
-    })
-  ).describe('A list of plant suggestions.'),
+  suggestions: z.array(PlantSuggestionSchema)
+  .min(1, "At least one suggestion should be provided.")
+  .max(6, "No more than 6 suggestions should be provided.")
+  .describe('A list of 3 to 5 plant suggestions.'),
 });
 export type SuggestPlantsOutput = z.infer<typeof SuggestPlantsOutputSchema>;
 
@@ -35,14 +37,17 @@ const prompt = ai.definePrompt({
   name: 'suggestPlantsPrompt',
   input: {schema: SuggestPlantsInputSchema},
   output: {schema: SuggestPlantsOutputSchema},
-  prompt: `You are a gardening expert. A user is looking for plant suggestions based on their climate and available space.
+  prompt: `You are an expert horticulturist and urban gardening advisor. A user is looking for plant suggestions.
 
-Climate: {{{climate}}}
-Available Space: {{{availableSpace}}}
+User's Climate: {{{climate}}}
+User's Available Space: {{{availableSpace}}}
 
-Suggest plants that are well-suited to the user's environment. Provide a brief description of each plant and why it is a good choice for the user.
+Please provide 3 to 5 plant suggestions that are well-suited to the user's environment. For each plant, give its common name and a concise, helpful description (2-3 sentences). The description should explain why the plant is a good choice for the specified climate and space, mention any unique features, and if possible, a very brief care tip (e.g., "prefers moist soil", "drought-tolerant once established").
 
-Format your response as a JSON array of plant suggestions, each with a name and description.`, 
+Focus on plants that are generally accessible and suitable for urban environments. Avoid overly rare or difficult-to-grow plants unless specifically implied by the user's input.
+
+Format your response strictly as a JSON object matching the output schema.
+`,
 });
 
 const suggestPlantsFlow = ai.defineFlow(
@@ -51,8 +56,29 @@ const suggestPlantsFlow = ai.defineFlow(
     inputSchema: SuggestPlantsInputSchema,
     outputSchema: SuggestPlantsOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
+  async (input) => {
+    // Log input for debugging
+    console.log('SuggestPlantsFlow input:', input);
+
+    const {output, usage} = await prompt(input);
+
+    // Log output and usage for debugging
+    console.log('SuggestPlantsFlow output:', output);
+    console.log('SuggestPlantsFlow usage:', usage);
+    
+    if (!output || !output.suggestions || output.suggestions.length === 0) {
+      // This case should ideally be handled by the LLM providing valid JSON or Zod schema failing earlier
+      // However, as a fallback if the LLM returns an empty suggestions array but valid JSON structure:
+      console.warn('LLM returned no suggestions. Sending a default helpful message.');
+      return {
+        suggestions: [
+          {
+            name: "No specific matches found",
+            description: "We couldn't find specific plant matches for your exact criteria with our current model. Try rephrasing your climate or space description, or be a bit more general. For example, instead of 'tiny north-facing window box', try 'small, shaded outdoor space'."
+          }
+        ]
+      };
+    }
+    return output;
   }
 );
