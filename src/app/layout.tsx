@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import { GeistSans } from 'geist/font/sans';
 // import { GeistMono } from 'geist/font/mono'; // Removed as it's not used and causing error
@@ -6,8 +7,12 @@ import { AppHeader } from '@/components/layout/header';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Urban Gardening Platform',
-  description: 'Find and get suggestions for your urban garden.',
+  title: {
+    default: 'Urban Gardening Platform',
+    template: '%s | Urban Gardening Platform',
+  },
+  description: 'Your one-stop platform for urban gardening success. Find plants, get suggestions, share your growth, and learn about plant care.',
+  keywords: ['urban gardening', 'plants', 'gardening tips', 'plant care', 'indoor plants', 'balcony garden', 'fertilizer guide', 'plant showcase'],
 };
 
 export default function RootLayout({
