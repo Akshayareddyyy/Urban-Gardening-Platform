@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ShowcaseForm, type ShowcaseFormValues } from '@/components/showcase/showcase-form';
 import { ShowcaseList } from '@/components/showcase/showcase-list';
 import type { ShowcasePost } from '@/types/showcase';
@@ -42,7 +42,7 @@ export default function ShowcasePage() {
   const { toast } = useToast();
 
   // Ref for the form to call its reset method
-  const formRef = React.useRef<{ reset: () => void }>(null);
+  const formRef = useRef<{ reset: () => void }>(null);
 
 
   const handleAddShowcasePost = async (data: ShowcaseFormValues, imageFile: File) => {
@@ -123,3 +123,4 @@ export default function ShowcasePage() {
     </section>
   );
 }
+
