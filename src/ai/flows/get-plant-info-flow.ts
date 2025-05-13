@@ -26,7 +26,7 @@ const GetPlantInfoOutputSchema = z.object({
   plantType: z.string().optional().describe('The type of plant (e.g., Herb, Shrub, Houseplant).'),
   careLevel: z.string().optional().describe('The care level required (e.g., Easy, Moderate, Hard).'),
   growthRate: z.string().optional().describe('The typical growth rate (e.g., Slow, Moderate, Fast).'),
-  imagePrompt: z.string().optional().describe('A descriptive prompt suitable for generating an image of this plant, focusing on its visual characteristics.'),
+  imagePrompt: z.string().optional().describe('A detailed, descriptive prompt suitable for an AI image generation model to create a photorealistic image of this plant, focusing on its visual characteristics and typical context.'),
 });
 export type GetPlantInfoOutput = z.infer<typeof GetPlantInfoOutputSchema>;
 
@@ -51,7 +51,7 @@ Otherwise, set "isPlant" to true and provide the following details:
 - plantType: The type of plant (e.g., Herb, Shrub, Tree, Houseplant, Succulent, Fern).
 - careLevel: General care difficulty (e.g., Easy, Moderate, Hard).
 - growthRate: Typical growth rate (e.g., Slow, Moderate, Fast).
-- imagePrompt: A concise, visually descriptive phrase for generating an image of the plant. Example: "A vibrant green basil plant with lush leaves in a terracotta pot."
+- imagePrompt: A detailed and descriptive prompt suitable for an AI image generation model. Focus on achieving a photorealistic image. The prompt should include the common name of the plant, its key visual characteristics (e.g., leaf shape, color, texture, flowers if applicable, overall structure), and its typical context or presentation (e.g., "close-up shot of leaves", "full plant in a terracotta pot on a sunny windowsill", "in a lush garden setting", "isolated on a white background"). Example: "Photorealistic image of a healthy Fiddle Leaf Fig (Ficus lyrata) with large, glossy, violin-shaped leaves, standing tall in a modern living room setting."
 
 Return the information in the specified JSON format.
 Example for "isPlant": false:
@@ -69,7 +69,7 @@ Example for a plant:
   "plantType": "Houseplant",
   "careLevel": "Easy",
   "growthRate": "Moderate",
-  "imagePrompt": "A healthy Swiss Cheese Plant (Monstera deliciosa) with large, fenestrated green leaves in an indoor setting."
+  "imagePrompt": "Photorealistic close-up of a healthy Swiss Cheese Plant (Monstera deliciosa) with large, distinctively fenestrated, glossy green leaves, in a bright indoor environment."
 }
 `,
 });
@@ -89,3 +89,4 @@ const getPlantInfoFlow = ai.defineFlow(
     return output;
   }
 );
+
