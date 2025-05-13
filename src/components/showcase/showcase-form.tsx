@@ -1,6 +1,7 @@
 
 'use client';
 
+import React, { useState, type ChangeEvent, forwardRef, useImperativeHandle } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -16,8 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Camera, UploadCloud } from 'lucide-react';
-import { useState, type ChangeEvent } from 'react';
+import { Loader2, UploadCloud } from 'lucide-react';
 import Image from 'next/image';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -43,7 +43,8 @@ type ShowcaseFormProps = {
   isLoading: boolean;
 };
 
-export function ShowcaseForm({ onSubmit, isLoading }: ShowcaseFormProps) {
+// Wrap component with forwardRef to accept a ref
+export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProps>(({ onSubmit, isLoading }, ref) => {
   const form = useForm<ShowcaseFormValues>({
     resolver: zodResolver(showcaseFormSchema),
     defaultValues: {
@@ -59,12 +60,10 @@ export function ShowcaseForm({ onSubmit, isLoading }: ShowcaseFormProps) {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Set for RHF validation
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       form.setValue('image', dataTransfer.files, { shouldValidate: true });
       
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -76,14 +75,14 @@ export function ShowcaseForm({ onSubmit, isLoading }: ShowcaseFormProps) {
     }
   };
 
-  const handleSubmit = (values: ShowcaseFormValues) => {
+  const handleSubmit = async (values: ShowcaseFormValues) => {
     const imageFile = values.image[0];
-    onSubmit(values, imageFile);
-    // Reset preview and form fields after successful submission handled by parent
+    await onSubmit(values, imageFile);
+    // Parent will call reset via ref if submission is successful
   };
   
-  // Function to be called by parent to reset form & preview
-  React.useImperativeHandle(form.control.register('resetForm', {}).ref, () => ({
+  // Expose a reset method via ref
+  useImperativeHandle(ref, () => ({
     reset: () => {
       form.reset();
       setImagePreview(null);
@@ -144,13 +143,13 @@ export function ShowcaseForm({ onSubmit, isLoading }: ShowcaseFormProps) {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => ( // field is used for RHF state, but input is handled by handleImageChange
+          render={({ field }) => ( 
             <FormItem>
               <FormLabel className="text-lg font-semibold text-primary">Plant Photo</FormLabel>
               <FormControl>
                  <Input 
                     type="file" 
-                    accept="image/*" 
+                    accept={ACCEPTED_IMAGE_TYPES.join(',')}
                     onChange={handleImageChange}
                     className="text-base file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                   />
@@ -184,4 +183,6 @@ export function ShowcaseForm({ onSubmit, isLoading }: ShowcaseFormProps) {
       </form>
     </Form>
   );
-}
+});
+
+ShowcaseForm.displayName = 'ShowcaseForm';

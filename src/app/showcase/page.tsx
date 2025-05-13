@@ -97,21 +97,9 @@ export default function ShowcasePage() {
 
       {/* Attach ref to ShowcaseForm */}
       <ShowcaseForm 
+        ref={formRef} // Pass the ref to ShowcaseForm
         onSubmit={handleAddShowcasePost} 
         isLoading={isLoading} 
-        // Forward the ref to the form component if it supports it (needs useImperativeHandle)
-        // For now, we handle reset in the callback.
-        // To use the ref, ShowcaseForm would need to be wrapped in forwardRef and use useImperativeHandle
-        // This is simplified here by just calling form.reset() within ShowcaseForm after successful submission.
-        // Let's adjust ShowcaseForm to expose a reset method or handle it internally.
-        // For simplicity, we'll have handleAddShowcasePost call form.reset() via RHF's form instance.
-        // The formRef approach is more robust:
-        // In ShowcaseForm, add: React.useImperativeHandle(ref, () => ({ resetForm() { form.reset(); setImagePreview(null); } }));
-        // Then pass formRef to ShowcaseForm: <ShowcaseForm ref={formRef} ... />
-        // This requires ShowcaseForm to use React.forwardRef.
-        // For now, the provided ShowcaseForm is designed to reset via its own internal logic if parent calls a prop
-        // Or simply, the parent can manage the form's `key` to force re-mount and reset, or pass down reset function.
-        // The provided ShowcaseForm uses form.control.register for an internal reset handle.
       />
 
       <div className="mt-16">
@@ -123,4 +111,3 @@ export default function ShowcasePage() {
     </section>
   );
 }
-
