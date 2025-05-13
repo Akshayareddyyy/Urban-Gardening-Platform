@@ -4,32 +4,35 @@ import type { PlantSummary } from '@/types/plant';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Droplets, Sun } from 'lucide-react';
+import { ArrowRight, Droplets, Sun, ImageOff } from 'lucide-react';
 
 interface PlantCardProps {
   plant: PlantSummary;
 }
 
 export function PlantCard({ plant }: PlantCardProps) {
-  // plant.id is now the slugified common_name
-  const placeholderImage = `https://picsum.photos/seed/${plant.id}/400/300`;
-  const imageUrl = plant.default_image?.imageDataUri || plant.default_image?.regular_url || plant.default_image?.thumbnail || placeholderImage;
-  const linkHref = `/plants/${plant.id}`;
+  const imageUrl = plant.default_image?.regular_url || plant.default_image?.original_url || plant.default_image?.thumbnail;
+  const linkHref = `/plants/${plant.id}`; // plant.id is now the OpenFarm slug
 
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg">
       <CardHeader className="p-0">
         <Link href={linkHref} aria-label={`View details for ${plant.common_name}`}>
-          <div className="relative w-full h-48">
-            <Image
-              src={imageUrl}
-              alt={`Image of ${plant.common_name}`}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-lg"
-              data-ai-hint={`${plant.common_name.split(' ')[0] || 'plant'} ${plant.common_name.split(' ').slice(1,2).join('') || 'greenery'}`}
-              unoptimized={!!plant.default_image?.imageDataUri} // Data URIs don't need optimization
-            />
+          <div className="relative w-full h-48 bg-muted">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={`Image of ${plant.common_name}`}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-t-lg"
+                data-ai-hint={`${plant.common_name.split(' ')[0] || 'plant'} ${plant.common_name.split(' ').slice(1,2).join('') || 'greenery'}`}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full w-full">
+                <ImageOff className="w-16 h-16 text-muted-foreground" />
+              </div>
+            )}
           </div>
         </Link>
       </CardHeader>
@@ -39,18 +42,22 @@ export function PlantCard({ plant }: PlantCardProps) {
             {plant.common_name}
           </Link>
         </CardTitle>
-        <p className="text-sm text-muted-foreground italic mb-3">
+        <p className="text-sm text-muted-foreground italic mb-3 truncate">
           {Array.isArray(plant.scientific_name) ? plant.scientific_name.join(', ') : plant.scientific_name}
         </p>
         <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2">
-            <Sun className="w-4 h-4 text-accent" />
-            <span>{Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : plant.sunlight}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Droplets className="w-4 h-4 text-accent" />
-            <span>{plant.watering} Watering</span>
-          </div>
+          {plant.sunlight && plant.sunlight !== 'N/A' && (
+            <div className="flex items-center gap-2">
+              <Sun className="w-4 h-4 text-accent" />
+              <span>{Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : plant.sunlight}</span>
+            </div>
+          )}
+          {plant.watering && plant.watering !== 'N/A' && (
+             <div className="flex items-center gap-2">
+              <Droplets className="w-4 h-4 text-accent" />
+              <span>{plant.watering}</span>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
