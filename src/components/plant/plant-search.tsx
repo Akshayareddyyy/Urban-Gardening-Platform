@@ -22,6 +22,7 @@ export function PlantSearch() {
     setIsLoading(true);
     setSearched(true); 
     try {
+      // This function call uses the Perenual API via src/lib/plant-api-service.ts
       const data = await searchPlants(query.trim());
       setResults(data);
     } catch (error) {

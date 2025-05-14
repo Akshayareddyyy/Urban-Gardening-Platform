@@ -135,7 +135,7 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 
 
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
-  console.log("Plant API Service: Using Perenual API Key:", PERENUAL_API_KEY ? PERENUAL_API_KEY.substring(0, 10) + "..." : "Not found/undefined");
+  console.log("Plant API Service: Initiating plant search with Perenual API. Key:", PERENUAL_API_KEY ? PERENUAL_API_KEY.substring(0, 10) + "..." : "Not found/undefined");
   if (!PERENUAL_API_KEY) {
     console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file or not accessible server-side. Plant search will not work.');
     return [];
@@ -145,6 +145,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   }
 
   const url = `${PERENUAL_API_URL}/species-list?key=${PERENUAL_API_KEY}&q=${encodeURIComponent(query)}`;
+  console.log(`Plant API Service: Fetching from Perenual URL: ${url.replace(PERENUAL_API_KEY, '[REDACTED_API_KEY]')}`);
 
   try {
     const response = await fetch(url, { cache: 'no-store' }); 
@@ -157,7 +158,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     const result = await response.json() as PerenualPlantListResponse;
     return result.data ? result.data.map(mapToPlantSummary) : [];
   } catch (error) {
-    console.error('Failed to search plants:', error);
+    console.error('Failed to search plants with Perenual API:', error);
     return []; 
   }
 }
@@ -176,6 +177,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     }
     
     const url = `${PERENUAL_API_URL}/species/details/${plantId}?key=${PERENUAL_API_KEY}`;
+    console.log(`Plant API Service: Fetching details from Perenual URL: ${url.replace(PERENUAL_API_KEY, '[REDACTED_API_KEY]')}`);
 
     const response = await fetch(url, { cache: 'no-store' }); 
     if (!response.ok) {
@@ -187,7 +189,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     const result = await response.json() as PerenualPlantDetailResponse;
     return mapToPlantDetail(result);
   } catch (error) {
-    console.error(`Unexpected error in getPlantDetails for ID ${plantId}:`, error);
+    console.error(`Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`, error);
     return null; 
   }
 }
