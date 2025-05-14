@@ -12,36 +12,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 
 const initialPosts: ShowcasePost[] = [
-  {
-    id: uuidv4(),
-    plantName: 'Monstera Deliciosa',
-    userName: 'Alice G.',
-    userAvatarUrl: 'https://placehold.co/64x64.png?text=AG',
-    description: 'My Monstera has grown so much in the past 6 months! I followed the sunlight and watering tips from this site, and it just took off. So happy with its progress and new leaves.',
-    imagePreviewUrl: 'https://placehold.co/600x400.png',
-    submittedAt: new Date(2023, 10, 15),
-    dataAiHint: 'monstera plant'
-  },
-  {
-    id: uuidv4(),
-    plantName: 'Snake Plant "Laurentii"',
-    userName: 'Bob K.',
-    userAvatarUrl: 'https://placehold.co/64x64.png?text=BK',
-    description: 'This Snake Plant is super resilient. Started from a small pup I found recommended here. It\'s thriving in my office with minimal care.',
-    imagePreviewUrl: 'https://placehold.co/600x400.png',
-    submittedAt: new Date(2023, 9, 22),
-    dataAiHint: 'snake plant'
-  },
-  {
-    id: uuidv4(),
-    plantName: 'Basil Garden',
-    userName: 'UrbanHerbie',
-    userAvatarUrl: 'https://placehold.co/64x64.png?text=UH',
-    description: 'Used the suggestions for my sunny balcony and now I have a thriving basil garden! Fresh pesto all summer long. Thanks for the tips!',
-    imagePreviewUrl: 'https://placehold.co/600x400.png',
-    submittedAt: new Date(2024, 0, 5),
-    dataAiHint: 'basil garden'
-  },
+  // Removed initial posts
 ];
 
 export default function ShowcasePage() {
