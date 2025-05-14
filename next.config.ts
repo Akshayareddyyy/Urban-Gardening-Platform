@@ -2,7 +2,7 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // output: 'export', // Removed to allow dynamic routes and server-side features
 
   /* config options here */
   typescript: {
