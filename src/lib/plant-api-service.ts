@@ -135,8 +135,9 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 
 
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
+  console.log("Plant API Service: Using Perenual API Key:", PERENUAL_API_KEY ? PERENUAL_API_KEY.substring(0, 10) + "..." : "Not found/undefined");
   if (!PERENUAL_API_KEY) {
-    console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
+    console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file or not accessible server-side. Plant search will not work.');
     return [];
   }
   if (!query || query.trim() === '') {
@@ -162,9 +163,10 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
 }
 
 export async function getPlantDetails(plantId: number): Promise<Plant | null> {
+  console.log("Plant API Service: Using Perenual API Key for details:", PERENUAL_API_KEY ? PERENUAL_API_KEY.substring(0, 10) + "..." : "Not found/undefined");
   try {
     if (!PERENUAL_API_KEY) {
-      console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
+      console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file or not accessible server-side. Cannot get plant details.');
       return null;
     }
 
