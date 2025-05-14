@@ -16,7 +16,7 @@ export default function LoginPage() {
       <div className="text-center mb-10">
         <LogIn className="mx-auto h-16 w-16 text-primary opacity-80 mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          Welcome Back!
+          Welcome!
         </h1>
         <p className="mt-3 text-lg leading-8 text-muted-foreground max-w-md mx-auto">
           Sign in to access your garden, showcase, and more.
