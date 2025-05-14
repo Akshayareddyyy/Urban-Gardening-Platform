@@ -2,7 +2,7 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export', // Re-added for static site generation
+  // output: 'export', // Removed for dynamic server-side rendering and to fix generateStaticParams build error
 
   /* config options here */
   typescript: {
@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // Disable Image Optimization for static export
+    unoptimized: true, // Keep this if you still intend to deploy where Next.js image optimization isn't available or desired. Or set to false if deploying to a Node.js env that can handle it.
     remotePatterns: [
       // Data URIs don't need to be listed here.
       {
