@@ -6,10 +6,11 @@ import { ShowcaseForm, type ShowcaseFormValues } from '@/components/showcase/sho
 import { ShowcaseList } from '@/components/showcase/showcase-list';
 import type { ShowcasePost } from '@/types/showcase';
 import { useToast } from "@/hooks/use-toast";
-import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs
-import { Users } from 'lucide-react'; // Changed icon
+import { v4 as uuidv4 } from 'uuid'; 
+import { Users } from 'lucide-react';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
-// Mock data for initial display
+
 const initialPosts: ShowcasePost[] = [
   {
     id: uuidv4(),
@@ -51,7 +52,7 @@ export default function ShowcasePage() {
 
   const handleAddShowcasePost = async (data: ShowcaseFormValues, imageFile: File) => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000)); 
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -59,11 +60,11 @@ export default function ShowcasePage() {
         id: uuidv4(),
         plantName: data.plantName,
         userName: data.userName,
-        userAvatarUrl: `https://placehold.co/64x64.png?text=${data.userName.substring(0,2).toUpperCase()}`, // Basic placeholder avatar
+        userAvatarUrl: `https://placehold.co/64x64.png?text=${data.userName.substring(0,2).toUpperCase()}`, 
         description: data.description,
         imagePreviewUrl: reader.result as string,
         submittedAt: new Date(),
-        dataAiHint: `${data.plantName.split(" ")[0]} user project` // Basic hint
+        dataAiHint: `${data.plantName.split(" ")[0]} user project` 
       };
       setPosts(prevPosts => [newPost, ...prevPosts]);
       setIsLoading(false);
@@ -87,30 +88,32 @@ export default function ShowcasePage() {
   };
 
   return (
-    <section className="w-full space-y-12">
-      <div className="text-center">
-        <Users className="mx-auto h-16 w-16 text-primary opacity-80 mb-4" />
-        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
-          Plant Growth Showcase
-        </h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
-          See how others are succeeding with their urban gardens and share your own triumphs! 
-          Upload a photo and tell us about your plant's journey.
-        </p>
-      </div>
+    <ProtectedRoute>
+      <section className="w-full space-y-12">
+        <div className="text-center">
+          <Users className="mx-auto h-16 w-16 text-primary opacity-80 mb-4" />
+          <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+            Plant Growth Showcase
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
+            See how others are succeeding with their urban gardens and share your own triumphs! 
+            Upload a photo and tell us about your plant's journey.
+          </p>
+        </div>
 
-      <ShowcaseForm 
-        ref={formRef}
-        onSubmit={handleAddShowcasePost} 
-        isLoading={isLoading} 
-      />
+        <ShowcaseForm 
+          ref={formRef}
+          onSubmit={handleAddShowcasePost} 
+          isLoading={isLoading} 
+        />
 
-      <div className="mt-16">
-        <h2 className="text-3xl font-semibold text-center text-primary mb-10">
-          Our Community's Green Gallery
-        </h2>
-        <ShowcaseList posts={posts} />
-      </div>
-    </section>
+        <div className="mt-16">
+          <h2 className="text-3xl font-semibold text-center text-primary mb-10">
+            Our Community's Green Gallery
+          </h2>
+          <ShowcaseList posts={posts} />
+        </div>
+      </section>
+    </ProtectedRoute>
   );
 }

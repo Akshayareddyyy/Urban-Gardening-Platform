@@ -3,36 +3,61 @@
 import Link from 'next/link';
 import { SproutIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Search, Lightbulb, GalleryThumbnails, FlaskConical, Mail, LogIn, UserPlus } from 'lucide-react';
+import { Search, Lightbulb, GalleryThumbnails, FlaskConical, Mail, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
+const commonNavItems = [
+  { href: '/contact', label: 'Contact Us', icon: Mail, protected: false },
+];
 
-const navItems = [
-  { href: '/', label: 'Search Plants', icon: Search },
-  { href: '/showcase', label: 'Showcase', icon: GalleryThumbnails },
-  { href: '/suggestions', label: 'Get Suggestions', icon: Lightbulb },
-  { href: '/fertilizer-guide', label: 'Fertilizer Guide', icon: FlaskConical },
-  { href: '/contact', label: 'Contact Us', icon: Mail },
+const protectedNavItems = [
+  { href: '/', label: 'Search Plants', icon: Search, protected: true },
+  { href: '/showcase', label: 'Showcase', icon: GalleryThumbnails, protected: true },
+  { href: '/suggestions', label: 'Get Suggestions', icon: Lightbulb, protected: true },
+  { href: '/fertilizer-guide', label: 'Fertilizer Guide', icon: FlaskConical, protected: true },
 ];
 
 const authNavItems = [
-  { href: '/login', label: 'Login', icon: LogIn },
-  { href: '/signup', label: 'Sign Up', icon: UserPlus },
+  { href: '/login', label: 'Login', icon: LogIn, protected: false },
+  { href: '/signup', label: 'Sign Up', icon: UserPlus, protected: false },
 ];
 
 export function AppHeader() {
   const pathname = usePathname();
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast({ title: "Logged Out", description: "You have been successfully logged out." });
+      router.push('/login'); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast({ variant: "destructive", title: "Logout Error", description: "Failed to log out. Please try again." });
+    }
+  };
+
+  let currentNavItems = [...commonNavItems];
+  if (isAuthenticated) {
+    currentNavItems = [...protectedNavItems, ...commonNavItems];
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
-        <Link href="/" className="flex items-center space-x-2 mr-6">
+        <Link href={isAuthenticated ? "/" : "/login"} className="flex items-center space-x-2 mr-6">
           <SproutIcon className="h-8 w-8 text-primary" />
           <span className="font-bold text-xl text-primary">Urban Gardening</span>
         </Link>
         <nav className="flex items-center space-x-1 md:space-x-0 flex-grow">
-          {navItems.map((item) => (
+          {currentNavItems.map((item) => (
             <Button
               key={item.href}
               variant="ghost"
@@ -52,7 +77,18 @@ export function AppHeader() {
           ))}
         </nav>
         <nav className="flex items-center space-x-1 md:space-x-0 ml-auto">
-          {authNavItems.map((item) => (
+          {isAuthenticated ? (
+            <Button
+              variant="ghost"
+              onClick={handleLogout}
+              className="text-sm font-medium px-2 py-2 md:px-3 text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              title="Logout"
+            >
+              <LogOut className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Logout</span>
+            </Button>
+          ) : (
+            authNavItems.map((item) => (
              <Button
               key={item.href}
               variant="ghost"
@@ -69,7 +105,8 @@ export function AppHeader() {
                 <span className="hidden md:inline">{item.label}</span>
               </Link>
             </Button>
-          ))}
+            ))
+          )}
         </nav>
       </div>
     </header>

@@ -10,8 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Loader2, RefreshCw, FlaskConical } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import type { Metadata } from 'next';
-
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 // Metadata can't be dynamic in 'use client' components directly.
 // If dynamic metadata is needed, it must be exported from a server component or layout.
 // For a static title/description for this page:
@@ -32,7 +31,7 @@ export default function FertilizerGuidePage() {
     setIsLoading(true);
     setError(null);
     setLastInput(data);
-    setSuggestions([]); // Clear previous suggestions
+    setSuggestions([]); 
 
     try {
       const result = await suggestFertilizers(data);
@@ -71,58 +70,60 @@ export default function FertilizerGuidePage() {
   };
 
   return (
-    <section className="w-full space-y-12">
-      <div className="text-center">
-        <FlaskConical className="mx-auto h-16 w-16 text-primary opacity-80 mb-4" />
-        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
-          Smart Fertilizer Guide
-        </h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
-          Confused about fertilizers? Tell us about your plant and its needs, and our AI will recommend the right nutrients for thriving growth.
-        </p>
-      </div>
-
-      <FertilizerForm onSubmit={handleGetFertilizerSuggestions} isLoading={isLoading} />
-
-      {isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="ml-4 text-lg text-muted-foreground">Mixing up fertilizer advice...</p>
+    <ProtectedRoute>
+      <section className="w-full space-y-12">
+        <div className="text-center">
+          <FlaskConical className="mx-auto h-16 w-16 text-primary opacity-80 mb-4" />
+          <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+            Smart Fertilizer Guide
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
+            Confused about fertilizers? Tell us about your plant and its needs, and our AI will recommend the right nutrients for thriving growth.
+          </p>
         </div>
-      )}
 
-      {error && !isLoading && (
-        <Alert variant="destructive" className="max-w-xl mx-auto">
-          <AlertTitle>Error Fetching Suggestions</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+        <FertilizerForm onSubmit={handleGetFertilizerSuggestions} isLoading={isLoading} />
 
-      {!isLoading && !error && suggestions.length > 0 && (
-        <div className="mt-12">
-          <FertilizerList suggestions={suggestions} />
-          <div className="text-center mt-8">
-            <Button onClick={handleRequestMore} disabled={isLoading || !lastInput} variant="outline" size="lg">
-              {isLoading && lastInput ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ) : (
-                <RefreshCw className="mr-2 h-5 w-5" />
-              )}
-              Get New Suggestions (Same Criteria)
-            </Button>
+        {isLoading && (
+          <div className="flex justify-center items-center py-10">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="ml-4 text-lg text-muted-foreground">Mixing up fertilizer advice...</p>
           </div>
-        </div>
-      )}
-       {!isLoading && !error && suggestions.length === 0 && lastInput && (
-         <div className="text-center py-8 text-muted-foreground mt-8">
-            <p className="text-lg">No specific fertilizer suggestions found for the given criteria. Perhaps try different keywords or broaden your search.</p>
-         </div>
-       )}
-       {!isLoading && !error && suggestions.length === 0 && !lastInput && (
-         <div className="text-center py-8 text-muted-foreground mt-8">
-            <p className="text-lg">Enter your plant details above to get personalized fertilizer recommendations!</p>
-         </div>
-       )}
-    </section>
+        )}
+
+        {error && !isLoading && (
+          <Alert variant="destructive" className="max-w-xl mx-auto">
+            <AlertTitle>Error Fetching Suggestions</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {!isLoading && !error && suggestions.length > 0 && (
+          <div className="mt-12">
+            <FertilizerList suggestions={suggestions} />
+            <div className="text-center mt-8">
+              <Button onClick={handleRequestMore} disabled={isLoading || !lastInput} variant="outline" size="lg">
+                {isLoading && lastInput ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <RefreshCw className="mr-2 h-5 w-5" />
+                )}
+                Get New Suggestions (Same Criteria)
+              </Button>
+            </div>
+          </div>
+        )}
+        {!isLoading && !error && suggestions.length === 0 && lastInput && (
+          <div className="text-center py-8 text-muted-foreground mt-8">
+              <p className="text-lg">No specific fertilizer suggestions found for the given criteria. Perhaps try different keywords or broaden your search.</p>
+          </div>
+        )}
+        {!isLoading && !error && suggestions.length === 0 && !lastInput && (
+          <div className="text-center py-8 text-muted-foreground mt-8">
+              <p className="text-lg">Enter your plant details above to get personalized fertilizer recommendations!</p>
+          </div>
+        )}
+      </section>
+    </ProtectedRoute>
   );
 }

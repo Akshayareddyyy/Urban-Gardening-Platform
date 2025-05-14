@@ -19,8 +19,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserRoundPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { auth } from '@/lib/firebase'; // Import Firebase auth instance
+import { auth } from '@/lib/firebase'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const signupFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(50, {message: "Name cannot exceed 50 characters."}),
@@ -29,7 +30,7 @@ const signupFormSchema = z.object({
   confirmPassword: z.string().min(8, { message: "Please confirm your password." })
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match.",
-  path: ["confirmPassword"], // path of error
+  path: ["confirmPassword"], 
 });
 
 type SignupFormValues = z.infer<typeof signupFormSchema>;
@@ -37,6 +38,7 @@ type SignupFormValues = z.infer<typeof signupFormSchema>;
 export function SignupForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupFormSchema),
@@ -74,18 +76,14 @@ export function SignupForm() {
     }
 
     try {
-      // We don't use 'name' directly for Firebase email/password creation,
-      // but you might want to store it in Firestore or update the user's profile later.
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      console.log('User created:', userCredential.user);
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      // console.log('User created:', userCredential.user); // UserCredential is not needed for redirect
       
       toast({
         title: "Account Created!",
-        description: "Your account has been successfully created. You can now log in.",
+        description: "Your account has been successfully created. Redirecting...",
       });
-      form.reset();
-      // Optionally, redirect user to login page or dashboard
-      // e.g., router.push('/login'); (needs import { useRouter } from 'next/navigation';)
+      router.push('/'); // Redirect to homepage after successful signup
     } catch (error: any) {
       console.error("Error creating user:", error);
       let errorMessage = "An unexpected error occurred during sign up. Please try again.";

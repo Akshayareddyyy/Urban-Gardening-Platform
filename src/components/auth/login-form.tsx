@@ -17,8 +17,11 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, KeyRound } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Link from 'next/link';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -30,6 +33,7 @@ type LoginFormValues = z.infer<typeof loginFormSchema>;
 export function LoginForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -41,18 +45,50 @@ export function LoginForm() {
 
   const handleSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
-    console.log('Login form submitted with:', values);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real app, you would call your authentication API here
-    // For now, we'll just show a success toast
-    toast({
-      title: "Login Attempted",
-      description: "Check console for submitted values. (Full auth not implemented yet)",
-    });
-    // form.reset(); // Optionally reset form
-    setIsLoading(false);
+    if (!auth) {
+        console.error("Firebase Auth is not initialized.");
+        toast({
+            variant: "destructive",
+            title: "Configuration Error",
+            description: "The authentication service is not configured. Please contact support.",
+        });
+        setIsLoading(false);
+        return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+      });
+      router.push('/'); // Redirect to homepage after successful login
+      // router.refresh(); // Could be used to ensure layout updates if needed
+    } catch (error: any) {
+      console.error("Error signing in:", error);
+      let errorMessage = "An unexpected error occurred during login. Please try again.";
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = "The email address is not valid.";
+          break;
+        case 'auth/user-disabled':
+          errorMessage = "This user account has been disabled.";
+          break;
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          errorMessage = "Invalid email or password. Please try again.";
+          break;
+        default:
+          errorMessage = error.message || errorMessage;
+      }
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

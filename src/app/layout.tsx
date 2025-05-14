@@ -1,10 +1,10 @@
 
 import type {Metadata} from 'next';
 import { GeistSans } from 'geist/font/sans';
-// import { GeistMono } from 'geist/font/mono'; // Removed as it's not used and causing error
 import './globals.css';
 import { AppHeader } from '@/components/layout/header';
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: {
@@ -23,13 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.variable} font-sans antialiased`}>
-        <div className="flex flex-col min-h-screen">
-          <AppHeader />
-          <main className="flex-grow container mx-auto px-4 py-8 md:px-6 lg:px-8">
-            {children}
-          </main>
-        </div>
-        <Toaster />
+        <AuthProvider>
+          <div className="flex flex-col min-h-screen">
+            <AppHeader />
+            <main className="flex-grow container mx-auto px-4 py-8 md:px-6 lg:px-8">
+              {children}
+            </main>
+          </div>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

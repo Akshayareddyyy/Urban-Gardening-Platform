@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -8,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function SuggestionsPage() {
   const [suggestions, setSuggestions] = useState<SuggestPlantsOutput['suggestions']>([]);
@@ -57,57 +59,59 @@ export default function SuggestionsPage() {
   };
 
   return (
-    <section className="w-full space-y-12">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
-          Personalized Plant Ideas
-        </h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
-          Tell us about your space and climate, and our AI will suggest the perfect plants for your urban oasis.
-        </p>
-      </div>
-
-      <SuggestionForm onSubmit={handleGetSuggestions} isLoading={isLoading} />
-
-      {isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="ml-4 text-lg text-muted-foreground">Generating your plant suggestions...</p>
+    <ProtectedRoute>
+      <section className="w-full space-y-12">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+            Personalized Plant Ideas
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
+            Tell us about your space and climate, and our AI will suggest the perfect plants for your urban oasis.
+          </p>
         </div>
-      )}
 
-      {error && !isLoading && (
-        <Alert variant="destructive" className="max-w-xl mx-auto">
-          <AlertTitle>Error Fetching Suggestions</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+        <SuggestionForm onSubmit={handleGetSuggestions} isLoading={isLoading} />
 
-      {!isLoading && !error && suggestions.length > 0 && (
-        <div className="mt-12">
-          <SuggestionList suggestions={suggestions} />
-          <div className="text-center mt-8">
-            <Button onClick={handleRequestMore} disabled={isLoading || !lastInput} variant="outline" size="lg">
-              {isLoading && lastInput ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ) : (
-                <RefreshCw className="mr-2 h-5 w-5" />
-              )}
-              Get New Suggestions With Same Criteria
-            </Button>
+        {isLoading && (
+          <div className="flex justify-center items-center py-10">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="ml-4 text-lg text-muted-foreground">Generating your plant suggestions...</p>
           </div>
-        </div>
-      )}
-       {!isLoading && !error && suggestions.length === 0 && lastInput && (
-         <div className="text-center py-8 text-muted-foreground mt-8">
-            <p className="text-lg">No suggestions found for the given criteria. Try being more general or different keywords.</p>
-         </div>
-       )}
-       {!isLoading && !error && suggestions.length === 0 && !lastInput && (
-         <div className="text-center py-8 text-muted-foreground mt-8">
-            <p className="text-lg">Enter your details above to discover plants tailored for you!</p>
-         </div>
-       )}
-    </section>
+        )}
+
+        {error && !isLoading && (
+          <Alert variant="destructive" className="max-w-xl mx-auto">
+            <AlertTitle>Error Fetching Suggestions</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {!isLoading && !error && suggestions.length > 0 && (
+          <div className="mt-12">
+            <SuggestionList suggestions={suggestions} />
+            <div className="text-center mt-8">
+              <Button onClick={handleRequestMore} disabled={isLoading || !lastInput} variant="outline" size="lg">
+                {isLoading && lastInput ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <RefreshCw className="mr-2 h-5 w-5" />
+                )}
+                Get New Suggestions With Same Criteria
+              </Button>
+            </div>
+          </div>
+        )}
+        {!isLoading && !error && suggestions.length === 0 && lastInput && (
+          <div className="text-center py-8 text-muted-foreground mt-8">
+              <p className="text-lg">No suggestions found for the given criteria. Try being more general or different keywords.</p>
+          </div>
+        )}
+        {!isLoading && !error && suggestions.length === 0 && !lastInput && (
+          <div className="text-center py-8 text-muted-foreground mt-8">
+              <p className="text-lg">Enter your details above to discover plants tailored for you!</p>
+          </div>
+        )}
+      </section>
+    </ProtectedRoute>
   );
 }
