@@ -15,8 +15,7 @@ type PlantDetailPageProps = {
 export async function generateStaticParams() {
   // In a real scenario with static export, you'd fetch a list of all plant IDs
   // to pre-render. For now, returning an empty array means no plant detail pages
-  // will be pre-built. Accessing them directly might lead to 404s or client-side rendering
-  // which won't work for data fetching if it relies on server actions.
+  // will be pre-built.
   return [];
 }
 
@@ -35,15 +34,22 @@ export async function generateMetadata(
 
   try {
     const plant = await getPlantDetails(plantId);
+    if (!plant) {
+      // If plant is not found, return specific metadata
+      return {
+        title: `Plant Details Not Found | Urban Gardening`,
+        description: `Details for plant ID ${params.id} could not be loaded or the plant was not found.`,
+      };
+    }
     return {
-      title: plant ? `${plant.common_name} | Urban Gardening` : 'Plant Details | Urban Gardening',
-      description: plant ? `Details about ${plant.common_name}: ${plant.description?.substring(0,150) || 'Learn more about this plant.'}...` : `Discover plant details on the Urban Gardening Platform.`,
+      title: `${plant.common_name} | Urban Gardening`,
+      description: `Details about ${plant.common_name}: ${plant.description?.substring(0,150) || 'Learn more about this plant.'}...`,
     }
   } catch (error) {
     console.error(`Error generating metadata for plant ID ${params.id}:`, error);
     return {
-      title: 'Plant Details | Urban Gardening',
-      description: 'Error loading plant details for metadata.',
+      title: 'Error Loading Plant Info | Urban Gardening',
+      description: 'There was an error while trying to load plant information for metadata. Please try again later.',
     }
   }
 }
@@ -89,12 +95,12 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
   }
 
   let plant = null;
+  let fetchError = null;
   try {
     plant = await getPlantDetails(plantId);
-  } catch (error)
+  } catch (error) {
     console.error(`Error fetching plant details in PlantDetailPage for ID ${plantIdStr}:`, error);
-    // The error will be handled by the !plant check below,
-    // or you can render a specific error component here.
+    fetchError = error instanceof Error ? error.message : "An unknown error occurred during data fetching.";
   }
 
   if (!plant) {
@@ -102,12 +108,13 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
       <div className="text-center py-10">
         <Alert variant="destructive" className="max-w-lg mx-auto">
           <ServerCrash className="h-5 w-5" />
-          <AlertTitle>Plant Not Found or Error Loading</AlertTitle>
+          <AlertTitle>Plant Not Found or Error Loading Details</AlertTitle>
           <AlertDescription>
             Sorry, we couldn't find or load details for the plant ID "{plantIdStr}". 
             It might be a rare species, not in our database, or there was an issue fetching its information.
             Please ensure your Perenual API key is correctly configured if this issue persists.
-            If this is a deployed static site, dynamic data fetching for plant details may not be supported.
+            If this is a deployed static site, dynamic data fetching for plant details is not supported.
+            {fetchError && <p className="mt-2">Specific error: {fetchError}</p>}
           </AlertDescription>
         </Alert>
          <Button asChild variant="link" className="mt-4">

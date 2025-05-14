@@ -146,7 +146,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   const url = `${PERENUAL_API_URL}/species-list?key=${PERENUAL_API_KEY}&q=${encodeURIComponent(query)}`;
 
   try {
-    const response = await fetch(url, { cache: 'force-cache' }); 
+    const response = await fetch(url, { cache: 'no-store' }); 
     if (!response.ok) {
       console.error(`Failed to fetch plants from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
@@ -175,7 +175,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     
     const url = `${PERENUAL_API_URL}/species/details/${plantId}?key=${PERENUAL_API_KEY}`;
 
-    const response = await fetch(url, { cache: 'force-cache' }); 
+    const response = await fetch(url, { cache: 'no-store' }); 
     if (!response.ok) {
       console.error(`Failed to fetch plant details for ID ${plantId} from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
