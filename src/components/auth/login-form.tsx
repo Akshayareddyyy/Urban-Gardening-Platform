@@ -72,7 +72,7 @@ export function LoginForm() {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
         title: "Login Successful",
-        description: "Welcome!", 
+        description: "Welcome!",
       });
       router.push('/');
     } catch (error: any) {
@@ -108,6 +108,9 @@ export function LoginForm() {
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    if (typeof window !== 'undefined') {
+      console.log('Attempting Google Sign-In from origin:', window.location.origin);
+    }
     if (!auth) {
       toast({ variant: "destructive", title: "Configuration Error", description: "Authentication service not available." });
       setIsLoading(false);
@@ -140,6 +143,9 @@ export function LoginForm() {
           break;
         case 'auth/operation-not-allowed':
             errorMessage = "Google Sign-In is not enabled for this project. Please contact support or enable it in the Firebase console.";
+            break;
+        case 'auth/unauthorized-domain':
+            errorMessage = `Google Sign-In Failed: This domain (${window.location.origin}) is not authorized for Firebase Authentication. Please add it to the authorized domains list in your Firebase project settings.`;
             break;
         default:
           errorMessage = error.message || errorMessage;

@@ -119,6 +119,9 @@ export function SignupForm() {
 
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
+    if (typeof window !== 'undefined') {
+      console.log('Attempting Google Sign-Up from origin:', window.location.origin);
+    }
     if (!auth) {
       toast({ variant: "destructive", title: "Configuration Error", description: "Authentication service not available." });
       setIsLoading(false);
@@ -151,6 +154,9 @@ export function SignupForm() {
           break;
         case 'auth/operation-not-allowed':
             errorMessage = "Google Sign-In is not enabled for this project. Please contact support or enable it in the Firebase console.";
+            break;
+        case 'auth/unauthorized-domain':
+            errorMessage = `Google Sign-Up Failed: This domain (${window.location.origin}) is not authorized for Firebase Authentication. Please add it to the authorized domains list in your Firebase project settings.`;
             break;
         default:
           errorMessage = error.message || errorMessage;
