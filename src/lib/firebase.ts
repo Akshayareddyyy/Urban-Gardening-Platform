@@ -1,6 +1,7 @@
 // src/lib/firebase.ts
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getAuth, type Auth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,18 +14,20 @@ const firebaseConfig = {
 
 let app: FirebaseApp;
 let db: Firestore;
+let auth: Auth;
 
 if (typeof window !== 'undefined' && !getApps().length) {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
+  auth = getAuth(app);
 } else if (typeof window !== 'undefined') {
   app = getApp();
   db = getFirestore(app);
+  auth = getAuth(app);
 } else {
   // Handle server-side initialization if needed, or leave uninitialized
   // For client-side only usage, this else block might not be strictly necessary
   // but it's good practice for universal modules.
-  // However, this specific setup is primarily for client-side Firestore.
 }
 
-export { app, db };
+export { app, db, auth };

@@ -18,7 +18,9 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserRoundPlus } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { auth } from '@/lib/firebase'; // Import Firebase auth instance
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const signupFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(50, {message: "Name cannot exceed 50 characters."}),
@@ -48,18 +50,59 @@ export function SignupForm() {
 
   const handleSubmit = async (values: SignupFormValues) => {
     setIsLoading(true);
-    console.log('Signup form submitted with:', values);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real app, you would call your authentication API here (e.g., Firebase Auth createUser)
-    // For now, we'll just show a success toast
-    toast({
-      title: "Sign Up Attempted",
-      description: "Check console for submitted values. (Full auth not implemented yet)",
-    });
-    // form.reset(); // Optionally reset form
-    setIsLoading(false);
+    if (!auth) {
+      console.error("Firebase Auth is not initialized.");
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: "The authentication service is not configured. Please contact support.",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // We don't use 'name' directly for Firebase email/password creation,
+      // but you might want to store it in Firestore or update the user's profile later.
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      console.log('User created:', userCredential.user);
+      
+      toast({
+        title: "Account Created!",
+        description: "Your account has been successfully created. You can now log in.",
+      });
+      form.reset();
+      // Optionally, redirect user to login page or dashboard
+      // e.g., router.push('/login'); (needs import { useRouter } from 'next/navigation';)
+    } catch (error: any) {
+      console.error("Error creating user:", error);
+      let errorMessage = "An unexpected error occurred during sign up. Please try again.";
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = "This email address is already in use by another account.";
+            break;
+          case 'auth/invalid-email':
+            errorMessage = "The email address is not valid.";
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = "Email/password accounts are not enabled.";
+            break;
+          case 'auth/weak-password':
+            errorMessage = "The password is too weak. Please choose a stronger password.";
+            break;
+          default:
+            errorMessage = error.message || errorMessage;
+        }
+      }
+      toast({
+        variant: "destructive",
+        title: "Sign Up Failed",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
