@@ -50,6 +50,18 @@ export function SignupForm() {
 
   const handleSubmit = async (values: SignupFormValues) => {
     setIsLoading(true);
+
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      console.error("Firebase API Key is missing. Please check your .env file and ensure NEXT_PUBLIC_FIREBASE_API_KEY is set.");
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: "Firebase API Key is not configured in the application environment. Please ensure it is set correctly.",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     if (!auth) {
       console.error("Firebase Auth is not initialized.");
       toast({
@@ -90,6 +102,9 @@ export function SignupForm() {
             break;
           case 'auth/weak-password':
             errorMessage = "The password is too weak. Please choose a stronger password.";
+            break;
+          case 'auth/api-key-not-valid':
+            errorMessage = "Firebase API Key is not valid. Please ensure it's configured correctly in your project environment.";
             break;
           default:
             errorMessage = error.message || errorMessage;
