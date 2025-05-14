@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
 import { searchPlants } from '@/lib/plant-api-service'; 
-import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
+import { MissingApiKeyError } from '@/lib/errors';
 import { Loader2, SearchIcon, HelpCircle, Leaf, AlertTriangle, KeyRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -25,7 +25,7 @@ export function PlantSearch() {
     setIsLoading(true);
     setSearched(true);
     setSearchError(null);
-    setResults([]); // Clear previous results
+    setResults([]); 
 
     try {
       // This function call uses the Perenual API via src/lib/plant-api-service.ts
@@ -34,7 +34,14 @@ export function PlantSearch() {
     } catch (error: any) {
       console.error('PlantSearch: Failed to search plants:', error);
       if (error instanceof MissingApiKeyError) {
-        setSearchError('Configuration Error: The Perenual API key is missing. Please ensure NEXT_PUBLIC_PERENUAL_API_KEY is set in your .env file and the server has been restarted.');
+        setSearchError(
+          `Critical Configuration Error: The Perenual API key is missing or not accessible.\n
+          Please ensure ALL of the following are true:\n
+          1. You have a file named exactly '.env' in the ROOT of your 'my-plant-app' project folder.\n
+          2. This '.env' file contains the line: NEXT_PUBLIC_PERENUAL_API_KEY=your_actual_api_key\n
+          3. You have completely STOPPED and RESTARTED your Next.js development server (npm run dev) after creating or modifying the .env file.\n
+          If these steps are done, your Next.js server terminal should log the key when the search is attempted. Current error message: ${error.message}`
+        );
       } else {
         setSearchError(error.message || 'An unexpected error occurred while searching. Please try again.');
       }
@@ -93,9 +100,9 @@ export function PlantSearch() {
           ))}
         </div>
       ) : searchError ? (
-         <Alert variant="destructive" className="max-w-xl mx-auto">
-           {searchError.includes("Configuration Error") ? <KeyRound className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
-           <AlertTitle>{searchError.includes("Configuration Error") ? "API Key Configuration Issue" : "Search Error"}</AlertTitle>
+         <Alert variant="destructive" className="max-w-2xl mx-auto whitespace-pre-line">
+           {searchError.includes("Critical Configuration Error") ? <KeyRound className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
+           <AlertTitle>{searchError.includes("Critical Configuration Error") ? "API Key Configuration Issue" : "Search Error"}</AlertTitle>
            <AlertDescription>{searchError}</AlertDescription>
          </Alert>
       ) : searched && results.length === 0 ? (
