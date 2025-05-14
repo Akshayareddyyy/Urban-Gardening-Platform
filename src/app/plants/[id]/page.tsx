@@ -10,6 +10,15 @@ type PlantDetailPageProps = {
   params: { id: string }; // id from URL is a string
 };
 
+// Required for static export of dynamic routes
+export async function generateStaticParams() {
+  // In a real scenario with static export, you'd fetch a list of all plant IDs
+  // to pre-render. For now, returning an empty array means no plant detail pages
+  // will be pre-built. Accessing them directly might lead to 404s or client-side rendering
+  // which won't work for data fetching if it relies on server actions.
+  return [];
+}
+
 export async function generateMetadata(
   { params }: PlantDetailPageProps,
   parent: ResolvingMetadata
