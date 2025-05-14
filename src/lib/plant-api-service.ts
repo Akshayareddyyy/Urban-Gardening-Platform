@@ -137,8 +137,6 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
   if (!PERENUAL_API_KEY) {
     console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
-    // Consider throwing an error or returning a more specific error state
-    // For now, returning an empty array to prevent crashes.
     return [];
   }
   if (!query || query.trim() === '') {
@@ -148,48 +146,47 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   const url = `${PERENUAL_API_URL}/species-list?key=${PERENUAL_API_KEY}&q=${encodeURIComponent(query)}`;
 
   try {
-    const response = await fetch(url, { cache: 'force-cache' }); // Added cache control
+    const response = await fetch(url, { cache: 'force-cache' }); 
     if (!response.ok) {
       console.error(`Failed to fetch plants from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
       console.error("Error body:", errorBody);
-      return []; // Return empty or throw an error
+      return []; 
     }
     const result = await response.json() as PerenualPlantListResponse;
     return result.data ? result.data.map(mapToPlantSummary) : [];
   } catch (error) {
     console.error('Failed to search plants:', error);
-    return []; // Return empty or throw an error
+    return []; 
   }
 }
 
 export async function getPlantDetails(plantId: number): Promise<Plant | null> {
-  if (!PERENUAL_API_KEY) {
-    console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
-    // Consider throwing an error or returning a more specific error state
-    return null;
-  }
-
-  if (isNaN(plantId) || plantId <= 0) {
-    console.error('Invalid plantId provided to getPlantDetails:', plantId);
-    return null;
-  }
-  
-  const url = `${PERENUAL_API_URL}/species/details/${plantId}?key=${PERENUAL_API_KEY}`;
-
   try {
-    const response = await fetch(url, { cache: 'force-cache' }); // Added cache control
+    if (!PERENUAL_API_KEY) {
+      console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
+      return null;
+    }
+
+    if (isNaN(plantId) || plantId <= 0) {
+      console.error('Invalid plantId provided to getPlantDetails:', plantId);
+      return null;
+    }
+    
+    const url = `${PERENUAL_API_URL}/species/details/${plantId}?key=${PERENUAL_API_KEY}`;
+
+    const response = await fetch(url, { cache: 'force-cache' }); 
     if (!response.ok) {
       console.error(`Failed to fetch plant details for ID ${plantId} from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
       console.error("Error body:", errorBody);
-      return null; // Return null or throw an error
+      return null; 
     }
     const result = await response.json() as PerenualPlantDetailResponse;
     return mapToPlantDetail(result);
   } catch (error) {
-    console.error(`Failed to get plant details for ID ${plantId}:`, error);
-    return null; // Return null or throw an error
+    console.error(`Unexpected error in getPlantDetails for ID ${plantId}:`, error);
+    return null; 
   }
 }
 
@@ -202,8 +199,9 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
 // will need to be implemented with a valid API endpoint.
 export async function fetchAllPlantIDs() {
   // Must return a list like: [{ id: '1' }, { id: '2' }, ...]
-  const res = await fetch('https://your-backend.com/api/plants'); // or local API
-  const data = await res.json();
-  return data.map((plant: any) => ({ id: plant.id.toString() }));
+  // const res = await fetch('https://your-backend.com/api/plants'); // or local API
+  // const data = await res.json();
+  // return data.map((plant: any) => ({ id: plant.id.toString() }));
+  return []; // Return empty array to satisfy build for static export if no IDs are pre-rendered
 }
 */

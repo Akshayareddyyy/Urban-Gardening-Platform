@@ -1,3 +1,4 @@
+
 import { getPlantDetails } from '@/lib/plant-api-service';
 import { PlantDetailDisplay } from '@/components/plant/plant-detail-display';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -32,11 +33,18 @@ export async function generateMetadata(
     }
   }
 
-  const plant = await getPlantDetails(plantId);
-  
-  return {
-    title: plant ? `${plant.common_name} | Urban Gardening` : 'Plant Details | Urban Gardening',
-    description: plant ? `Details about ${plant.common_name}: ${plant.description?.substring(0,150) || 'Learn more about this plant.'}...` : `Discover plant details on the Urban Gardening Platform.`,
+  try {
+    const plant = await getPlantDetails(plantId);
+    return {
+      title: plant ? `${plant.common_name} | Urban Gardening` : 'Plant Details | Urban Gardening',
+      description: plant ? `Details about ${plant.common_name}: ${plant.description?.substring(0,150) || 'Learn more about this plant.'}...` : `Discover plant details on the Urban Gardening Platform.`,
+    }
+  } catch (error) {
+    console.error(`Error generating metadata for plant ID ${params.id}:`, error);
+    return {
+      title: 'Plant Details | Urban Gardening',
+      description: 'Error loading plant details for metadata.',
+    }
   }
 }
 
@@ -80,18 +88,26 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
     );
   }
 
-  const plant = await getPlantDetails(plantId);
+  let plant = null;
+  try {
+    plant = await getPlantDetails(plantId);
+  } catch (error)
+    console.error(`Error fetching plant details in PlantDetailPage for ID ${plantIdStr}:`, error);
+    // The error will be handled by the !plant check below,
+    // or you can render a specific error component here.
+  }
 
   if (!plant) {
     return (
       <div className="text-center py-10">
         <Alert variant="destructive" className="max-w-lg mx-auto">
           <ServerCrash className="h-5 w-5" />
-          <AlertTitle>Plant Not Found</AlertTitle>
+          <AlertTitle>Plant Not Found or Error Loading</AlertTitle>
           <AlertDescription>
-            Sorry, we couldn't find details for the plant ID "{plantIdStr}". 
+            Sorry, we couldn't find or load details for the plant ID "{plantIdStr}". 
             It might be a rare species, not in our database, or there was an issue fetching its information.
             Please ensure your Perenual API key is correctly configured if this issue persists.
+            If this is a deployed static site, dynamic data fetching for plant details may not be supported.
           </AlertDescription>
         </Alert>
          <Button asChild variant="link" className="mt-4">
