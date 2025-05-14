@@ -20,8 +20,9 @@ import { Loader2, UserRoundPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { auth } from '@/lib/firebase'; 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
 
 const signupFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(50, {message: "Name cannot exceed 50 characters."}),
@@ -34,6 +35,17 @@ const signupFormSchema = z.object({
 });
 
 type SignupFormValues = z.infer<typeof signupFormSchema>;
+
+// Simple Google Icon component
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px" {...props}>
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    <path fill="none" d="M0 0h48v48H0z"/>
+  </svg>
+);
 
 export function SignupForm() {
   const { toast } = useToast();
@@ -53,17 +65,6 @@ export function SignupForm() {
   const handleSubmit = async (values: SignupFormValues) => {
     setIsLoading(true);
 
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      console.error("Firebase API Key is missing. Please check your .env file and ensure NEXT_PUBLIC_FIREBASE_API_KEY is set.");
-      toast({
-        variant: "destructive",
-        title: "Configuration Error",
-        description: "Firebase API Key is not configured in the application environment. Please ensure it is set correctly.",
-      });
-      setIsLoading(false);
-      return;
-    }
-
     if (!auth) {
       console.error("Firebase Auth is not initialized.");
       toast({
@@ -77,13 +78,11 @@ export function SignupForm() {
 
     try {
       await createUserWithEmailAndPassword(auth, values.email, values.password);
-      // console.log('User created:', userCredential.user); // UserCredential is not needed for redirect
-      
       toast({
         title: "Account Created!",
         description: "Your account has been successfully created. Redirecting...",
       });
-      router.push('/'); // Redirect to homepage after successful signup
+      router.push('/'); 
     } catch (error: any) {
       console.error("Error creating user:", error);
       let errorMessage = "An unexpected error occurred during sign up. Please try again.";
@@ -118,11 +117,59 @@ export function SignupForm() {
     }
   };
 
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true);
+    if (!auth) {
+      toast({ variant: "destructive", title: "Configuration Error", description: "Authentication service not available." });
+      setIsLoading(false);
+      return;
+    }
+
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Signed In with Google",
+        description: "Your account has been created and you're signed in!",
+      });
+      router.push('/');
+    } catch (error: any) {
+      console.error("Error signing up with Google:", error);
+      let errorMessage = "An unexpected error occurred during Google sign-up. Please try again.";
+       switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          errorMessage = "Sign-up popup was closed before completion. Please try again.";
+          break;
+        case 'auth/cancelled-popup-request':
+           errorMessage = "Multiple sign-up popups were open. Please close them and try again.";
+           break;
+        case 'auth/popup-blocked':
+          errorMessage = "Sign-up popup was blocked by the browser. Please enable popups for this site and try again.";
+          break;
+        case 'auth/account-exists-with-different-credential':
+          errorMessage = "An account already exists with the same email address but different sign-in credentials. Try signing in with the original method used for that email.";
+          break;
+        case 'auth/operation-not-allowed':
+            errorMessage = "Google Sign-In is not enabled for this project. Please contact support or enable it in the Firebase console.";
+            break;
+        default:
+          errorMessage = error.message || errorMessage;
+      }
+      toast({
+        variant: "destructive",
+        title: "Google Sign-Up Failed",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
      <Card className="w-full max-w-md shadow-xl border">
       <CardHeader>
         <CardTitle className="text-2xl font-semibold text-primary">Create Account</CardTitle>
-        <CardDescription>Fill in the details below to get started.</CardDescription>
+        <CardDescription>Fill in the details below or use Google to get started.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -191,12 +238,39 @@ export function SignupForm() {
               ) : (
                 <>
                   <UserRoundPlus className="mr-2 h-5 w-5" />
-                  Sign Up
+                  Sign Up with Email
                 </>
               )}
             </Button>
           </form>
         </Form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <Separator />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">
+              Or sign up with
+            </span>
+          </div>
+        </div>
+
+        <Button 
+          variant="outline" 
+          type="button"
+          onClick={handleGoogleSignUp} 
+          disabled={isLoading} 
+          className="w-full text-base py-3 h-12"
+        >
+          {isLoading ? (
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          ) : (
+            <GoogleIcon className="mr-2" />
+          )}
+          Sign Up with Google
+        </Button>
+
       </CardContent>
     </Card>
   );
