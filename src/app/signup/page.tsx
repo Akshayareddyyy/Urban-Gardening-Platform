@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { SignupForm } from '@/components/auth/signup-form';
 import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button'; // Added import
 
 export const metadata: Metadata = {
   title: 'Sign Up | Urban Gardening Platform',
