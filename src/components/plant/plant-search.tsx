@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
 import { searchPlants } from '@/lib/plant-api-service';
-import { Loader2, SearchIcon, HelpCircle } from 'lucide-react';
+import { Loader2, SearchIcon, HelpCircle, Leaf } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
@@ -22,7 +22,6 @@ export function PlantSearch() {
     setIsLoading(true);
     setSearched(true); 
     try {
-      // searchPlants in the backend will return [] for an empty query.
       const data = await searchPlants(query.trim());
       setResults(data);
     } catch (error) {
@@ -47,24 +46,25 @@ export function PlantSearch() {
   
   return (
     <div className="space-y-8">
-      <form onSubmit={onSearchSubmit} className="flex w-full max-w-xl mx-auto items-center space-x-2">
+      <form onSubmit={onSearchSubmit} className="flex w-full max-w-2xl mx-auto items-center space-x-3 bg-card p-3 rounded-lg shadow-md border">
+        <SearchIcon className="h-6 w-6 text-muted-foreground ml-2 flex-shrink-0" />
         <Input
           type="text"
-          placeholder="Search for plants (e.g., Basil, Rose)"
+          placeholder="E.g., Ficus, Rose, Indoor Fern..."
           value={searchTerm}
           onChange={onSearchInputChange}
-          className="text-base"
+          className="text-base flex-grow border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
           aria-label="Search for plants"
         />
-        <Button type="submit" disabled={isLoading || isPending} className="text-base">
-          {isLoading || isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <SearchIcon className="h-5 w-5" />}
-          <span className="ml-2 hidden sm:inline">Search</span>
+        <Button type="submit" disabled={isLoading || isPending} className="text-base px-6">
+          {isLoading || isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <span className="hidden sm:inline">Search</span>}
+          {isLoading || isPending ? null : <SearchIcon className="h-5 w-5 sm:hidden" />}
         </Button>
       </form>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: 8 }).map((_, index) => (
             <Card key={index} className="flex flex-col">
               <Skeleton className="h-48 w-full rounded-t-lg" />
               <CardContent className="p-4 flex-grow space-y-2">
@@ -82,15 +82,15 @@ export function PlantSearch() {
         </div>
       ) : searched && results.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
-          <HelpCircle className="mx-auto h-12 w-12 mb-4 text-accent" />
-          <h2 className="text-2xl font-semibold text-foreground mb-2">No Plants Found</h2>
-          <p>
+          <HelpCircle className="mx-auto h-16 w-16 mb-4 text-accent opacity-70" />
+          <h2 className="text-2xl font-semibold text-foreground mb-2">No Green Matches Found</h2>
+          <p className="max-w-md mx-auto">
             {searchTerm.trim() === '' 
               ? "Please enter a search term to find plants."
-              : `We couldn't find any plants matching your search "${searchTerm}". Please check your spelling or try a different term.`}
+              : `We couldn't find any plants matching "${searchTerm}". Try checking your spelling or using more general terms.`}
           </p>
           <p className="text-sm mt-4">
-            Note: If this issue persists for all searches, please ensure the Perenual API key is correctly configured in your application's environment settings.
+            Tip: Broaden your search (e.g., "flowering plant" instead of a very specific variety).
           </p>
         </div>
       ) : results.length > 0 ? (
@@ -100,10 +100,13 @@ export function PlantSearch() {
           ))}
         </div>
       ) : !searched && !isLoading ? ( 
-         <div className="text-center py-12 text-muted-foreground">
-           <SearchIcon className="mx-auto h-12 w-12 mb-4 text-accent" />
-           <h2 className="text-2xl font-semibold text-foreground mb-2">Discover Your Perfect Plant</h2>
-           <p>Enter a plant name in the search bar above to find information and care tips.</p>
+         <div className="text-center py-16 text-muted-foreground bg-gradient-to-b from-background to-secondary/30 rounded-xl border border-dashed">
+           <Leaf className="mx-auto h-16 w-16 mb-6 text-primary opacity-60" />
+           <h2 className="text-3xl font-semibold text-foreground mb-3">Ready to Find Your Plant?</h2>
+           <p className="max-w-lg mx-auto text-lg">
+             Type a plant name, characteristic, or type into the search bar above. 
+             Let's unearth the perfect plant for your urban garden!
+           </p>
          </div>
       ) : null}
     </div>
