@@ -44,23 +44,28 @@ export function ContactForm() {
   });
 
   const handleSubmit = async (values: ContactFormValues) => {
+    console.log("Contact form: Attempting to send message with values:", values);
+    console.log("Contact form: Firestore db instance:", db);
     setIsLoading(true);
+
     if (!db) {
-      console.error("Firestore database is not initialized.");
+      console.error("Contact form: Firestore database is not initialized. 'db' is null or undefined.");
       toast({
         variant: "destructive",
         title: "Configuration Error",
-        description: "The messaging service is not configured. Please contact support.",
+        description: "The messaging service is not properly configured. Please contact support.",
       });
       setIsLoading(false);
       return;
     }
+
     try {
-      // Add a new document with a generated id to the "contacts" collection.
-      await addDoc(collection(db, "contacts"), {
+      console.log("Contact form: Calling addDoc to Firestore 'contacts' collection...");
+      const docRef = await addDoc(collection(db, "contacts"), {
         ...values,
         submittedAt: serverTimestamp(), // Add a server timestamp
       });
+      console.log("Contact form: Message successfully sent to Firestore. Document ID:", docRef.id);
 
       toast({
         title: "Message Sent!",
@@ -68,11 +73,24 @@ export function ContactForm() {
       });
       form.reset();
     } catch (error) {
-      console.error("Error adding document to Firestore: ", error);
+      console.error("Contact form: Detailed error adding document to Firestore:", error);
+      let errorMessage = "There was a problem sending your message. Please try again later.";
+      if (error instanceof Error && 'code' in error) {
+        // Firebase errors often have a 'code' property
+        const firebaseError = error as { code: string; message: string };
+        if (firebaseError.code === 'permission-denied') {
+          errorMessage = "Submission failed: Permission denied. Please check Firestore security rules.";
+        } else {
+          errorMessage = `Submission failed: ${firebaseError.message} (Code: ${firebaseError.code})`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Submission failed: ${error.message}`;
+      }
+      
       toast({
         variant: "destructive",
         title: "Submission Error",
-        description: "There was a problem sending your message. Please try again later.",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
