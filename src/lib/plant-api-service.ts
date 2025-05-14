@@ -1,3 +1,4 @@
+
 'use server';
 
 import type { Plant, PlantSummary } from '@/types/plant';
@@ -136,6 +137,8 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
   if (!PERENUAL_API_KEY) {
     console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
+    // Consider throwing an error or returning a more specific error state
+    // For now, returning an empty array to prevent crashes.
     return [];
   }
   if (!query || query.trim() === '') {
@@ -150,19 +153,20 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
       console.error(`Failed to fetch plants from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
       console.error("Error body:", errorBody);
-      return [];
+      return []; // Return empty or throw an error
     }
     const result = await response.json() as PerenualPlantListResponse;
     return result.data ? result.data.map(mapToPlantSummary) : [];
   } catch (error) {
     console.error('Failed to search plants:', error);
-    return [];
+    return []; // Return empty or throw an error
   }
 }
 
 export async function getPlantDetails(plantId: number): Promise<Plant | null> {
   if (!PERENUAL_API_KEY) {
     console.error('Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured in .env file.');
+    // Consider throwing an error or returning a more specific error state
     return null;
   }
 
@@ -179,12 +183,27 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
       console.error(`Failed to fetch plant details for ID ${plantId} from Perenual API: ${response.status} ${response.statusText}`);
       const errorBody = await response.text();
       console.error("Error body:", errorBody);
-      return null;
+      return null; // Return null or throw an error
     }
     const result = await response.json() as PerenualPlantDetailResponse;
     return mapToPlantDetail(result);
   } catch (error) {
     console.error(`Failed to get plant details for ID ${plantId}:`, error);
-    return null;
+    return null; // Return null or throw an error
   }
 }
+
+/*
+// This function was causing a build error because it used a placeholder URL
+// which returned HTML instead of JSON, leading to a parsing error during
+// Next.js's attempt to collect page data for dynamic routes.
+// Commented out to allow the build to pass.
+// If generateStaticParams is needed for /plants/[id], this function
+// will need to be implemented with a valid API endpoint.
+export async function fetchAllPlantIDs() {
+  // Must return a list like: [{ id: '1' }, { id: '2' }, ...]
+  const res = await fetch('https://your-backend.com/api/plants'); // or local API
+  const data = await res.json();
+  return data.map((plant: any) => ({ id: plant.id.toString() }));
+}
+*/

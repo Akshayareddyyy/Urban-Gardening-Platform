@@ -70,22 +70,35 @@ const suggestFertilizersFlow = ai.defineFlow(
   },
   async (input) => {
     console.log('SuggestFertilizersFlow input:', input);
-    const {output, usage} = await prompt(input);
-    console.log('SuggestFertilizersFlow output:', output);
-    console.log('SuggestFertilizersFlow usage:', usage);
+    try {
+      const {output, usage} = await prompt(input);
+      console.log('SuggestFertilizersFlow output:', output);
+      console.log('SuggestFertilizersFlow usage:', usage);
 
-    if (!output || !output.suggestions || output.suggestions.length === 0) {
-      console.warn('LLM returned no fertilizer suggestions. Sending a default helpful message.');
+      if (!output || !output.suggestions || output.suggestions.length === 0) {
+        console.warn('LLM returned no fertilizer suggestions. Sending a default helpful message.');
+        return {
+          suggestions: [
+            {
+              fertilizerName: "No specific matches found",
+              suitability: "We couldn't find specific fertilizer matches for your exact criteria. Try rephrasing your plant type or growth focus.",
+              applicationNotes: "For general guidance, a balanced all-purpose fertilizer is often a good starting point for many plants. Always follow product label instructions."
+            }
+          ]
+        };
+      }
+      return output;
+    } catch (error) {
+      console.error('Error in suggestFertilizersFlow calling prompt:', error);
       return {
         suggestions: [
           {
-            fertilizerName: "No specific matches found",
-            suitability: "We couldn't find specific fertilizer matches for your exact criteria with our current model. Try rephrasing your plant type or growth focus.",
-            applicationNotes: "For general guidance, a balanced all-purpose fertilizer is often a good starting point for many plants. Always follow product label instructions."
+            fertilizerName: "Error Generating Suggestions",
+            suitability: "Sorry, we encountered an error while trying to generate fertilizer suggestions. Please try again later.",
+            applicationNotes: "If the problem persists, please contact support."
           }
         ]
       };
     }
-    return output;
   }
 );

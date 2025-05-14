@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Personalized plant suggestions based on climate and available space.
@@ -57,28 +58,37 @@ const suggestPlantsFlow = ai.defineFlow(
     outputSchema: SuggestPlantsOutputSchema,
   },
   async (input) => {
-    // Log input for debugging
     console.log('SuggestPlantsFlow input:', input);
 
-    const {output, usage} = await prompt(input);
-
-    // Log output and usage for debugging
-    console.log('SuggestPlantsFlow output:', output);
-    console.log('SuggestPlantsFlow usage:', usage);
-    
-    if (!output || !output.suggestions || output.suggestions.length === 0) {
-      // This case should ideally be handled by the LLM providing valid JSON or Zod schema failing earlier
-      // However, as a fallback if the LLM returns an empty suggestions array but valid JSON structure:
-      console.warn('LLM returned no suggestions. Sending a default helpful message.');
+    try {
+      const {output, usage} = await prompt(input);
+      console.log('SuggestPlantsFlow output:', output);
+      console.log('SuggestPlantsFlow usage:', usage);
+      
+      if (!output || !output.suggestions || output.suggestions.length === 0) {
+        console.warn('LLM returned no suggestions. Sending a default helpful message.');
+        return {
+          suggestions: [
+            {
+              name: "No specific matches found",
+              description: "We couldn't find specific plant matches for your exact criteria with our current model. Try rephrasing your climate or space description, or be a bit more general."
+            }
+          ]
+        };
+      }
+      return output;
+    } catch (error) {
+      console.error('Error in suggestPlantsFlow calling prompt:', error);
+      // Return a structured error response that matches SuggestPlantsOutputSchema
       return {
         suggestions: [
           {
-            name: "No specific matches found",
-            description: "We couldn't find specific plant matches for your exact criteria with our current model. Try rephrasing your climate or space description, or be a bit more general. For example, instead of 'tiny north-facing window box', try 'small, shaded outdoor space'."
+            name: "Error Generating Suggestions",
+            description: "Sorry, we encountered an error while trying to generate plant suggestions. Please try again later."
           }
         ]
       };
     }
-    return output;
   }
 );
+
