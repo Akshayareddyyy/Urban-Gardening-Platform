@@ -6,27 +6,38 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
-import { searchPlants } from '@/lib/plant-api-service';
-import { Loader2, SearchIcon, HelpCircle, Leaf } from 'lucide-react';
+import { searchPlants } from '@/lib/plant-api-service'; 
+import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
+import { Loader2, SearchIcon, HelpCircle, Leaf, AlertTriangle, KeyRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function PlantSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<PlantSummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searched, setSearched] = useState(false); // True if a search has been attempted
+  const [searched, setSearched] = useState(false); 
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const performSearch = async (query: string) => {
     setIsLoading(true);
-    setSearched(true); 
+    setSearched(true);
+    setSearchError(null);
+    setResults([]); // Clear previous results
+
     try {
       // This function call uses the Perenual API via src/lib/plant-api-service.ts
       const data = await searchPlants(query.trim());
       setResults(data);
-    } catch (error) {
-      console.error('Failed to search plants:', error);
+    } catch (error: any) {
+      console.error('PlantSearch: Failed to search plants:', error);
+      if (error instanceof MissingApiKeyError) {
+        setSearchError('Configuration Error: The Perenual API key is missing. Please ensure NEXT_PUBLIC_PERENUAL_API_KEY is set in your .env file and the server has been restarted.');
+      } else {
+        setSearchError(error.message || 'An unexpected error occurred while searching. Please try again.');
+      }
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -81,6 +92,12 @@ export function PlantSearch() {
             </Card>
           ))}
         </div>
+      ) : searchError ? (
+         <Alert variant="destructive" className="max-w-xl mx-auto">
+           {searchError.includes("Configuration Error") ? <KeyRound className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
+           <AlertTitle>{searchError.includes("Configuration Error") ? "API Key Configuration Issue" : "Search Error"}</AlertTitle>
+           <AlertDescription>{searchError}</AlertDescription>
+         </Alert>
       ) : searched && results.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <HelpCircle className="mx-auto h-16 w-16 mb-4 text-accent opacity-70" />
