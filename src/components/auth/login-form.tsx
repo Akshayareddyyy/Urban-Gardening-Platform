@@ -45,6 +45,18 @@ export function LoginForm() {
 
   const handleSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
+
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      console.error("Firebase API Key is missing. Please check your .env file and ensure NEXT_PUBLIC_FIREBASE_API_KEY is set.");
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: "Firebase API Key is not configured in the application environment. Please ensure it is set correctly and the server was restarted.",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     if (!auth) {
         console.error("Firebase Auth is not initialized.");
         toast({
@@ -61,8 +73,8 @@ export function LoginForm() {
         title: "Login Successful",
         description: "Welcome back!",
       });
-      router.push('/'); // Redirect to homepage after successful login
-      // router.refresh(); // Could be used to ensure layout updates if needed
+      router.push('/'); 
+      // router.refresh(); // To ensure layout updates reflecting auth state
     } catch (error: any) {
       console.error("Error signing in:", error);
       let errorMessage = "An unexpected error occurred during login. Please try again.";
@@ -77,6 +89,9 @@ export function LoginForm() {
         case 'auth/wrong-password':
         case 'auth/invalid-credential':
           errorMessage = "Invalid email or password. Please try again.";
+          break;
+        case 'auth/api-key-not-valid':
+          errorMessage = "Firebase API Key is not valid. Please ensure it's configured correctly in your project environment and the server was restarted.";
           break;
         default:
           errorMessage = error.message || errorMessage;
