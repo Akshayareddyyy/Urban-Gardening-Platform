@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: true, // Disable Image Optimization for static export
     remotePatterns: [
       // Data URIs don't need to be listed here.
       {
