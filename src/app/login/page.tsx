@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { LoginForm } from '@/components/auth/login-form';
 import { LogIn } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button'; // Added import
+import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'Login | Urban Gardening Platform',
@@ -19,7 +19,7 @@ export default function LoginPage() {
           Welcome!
         </h1>
         <p className="mt-3 text-lg leading-8 text-muted-foreground max-w-md mx-auto">
-          Sign in to access your garden, showcase, and more.
+          Sign in to access your personalized urban garden, community showcase, and helpful tools.
         </p>
       </div>
       <LoginForm />
