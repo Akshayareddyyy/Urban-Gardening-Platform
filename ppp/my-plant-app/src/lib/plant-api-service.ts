@@ -1,15 +1,15 @@
 
 'use server';
 
-import type { Plant, PlantSummary } from '@/types/plant';
-import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
-
 // Log the environment variable as soon as the module is loaded on the server
 const PERENUAL_API_KEY_FROM_ENV = process.env.NEXT_PUBLIC_PERENUAL_API_KEY;
 console.log(
   'Plant API Service (Module Load Check): NEXT_PUBLIC_PERENUAL_API_KEY value is:',
   PERENUAL_API_KEY_FROM_ENV ? `"${PERENUAL_API_KEY_FROM_ENV.substring(0,10)}..." (length: ${PERENUAL_API_KEY_FROM_ENV.length})` : PERENUAL_API_KEY_FROM_ENV
 );
+
+import type { Plant, PlantSummary } from '@/types/plant';
+import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
 
 const PERENUAL_API_URL = 'https://perenual.com/api';
 
@@ -146,11 +146,12 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   
   console.log("Plant API Service: Initiating plant search. Key available:", apiKey ? 'Yes' : 'No');
   if (!apiKey) {
-    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Please set it in your .env file and restart the server.';
+    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Please set it in your .env file (for local dev) or Cloud Function environment variables (for deployment).';
     console.error("CRITICAL: searchPlants - " + errorMsg);
     throw new MissingApiKeyError(errorMsg);
   }
   if (!query || query.trim() === '') {
+    console.log("Plant API Service: searchPlants received empty query, returning empty array.");
     return [];
   }
 
@@ -162,8 +163,8 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     if (!response.ok) {
       const errorBody = await response.text();
       const errorMsg = `Failed to fetch plants from Perenual API: ${response.status} ${response.statusText}. Response: ${errorBody}`;
-      console.error(errorMsg);
-      throw new Error(`Perenual API request failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota.`);
+      console.error("Plant API Service: searchPlants - " + errorMsg);
+      throw new Error(`Perenual API request failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody}`);
     }
     const result = await response.json() as PerenualPlantListResponse;
     console.log(`Plant API Service: Received ${result.data?.length || 0} items from Perenual for query "${query}".`);
@@ -184,7 +185,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
   console.log("Plant API Service: Initiating plant details fetch. Key available:", apiKey ? 'Yes' : 'No');
   try {
     if (!apiKey) {
-      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Plant details cannot be fetched.';
+      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Plant details cannot be fetched. Set in .env (local) or Cloud Function env vars (deployed).';
       console.error("CRITICAL: getPlantDetails - " + errorMsg);
       throw new MissingApiKeyError(errorMsg);
     }
@@ -201,20 +202,19 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     if (!response.ok) {
       const errorBody = await response.text();
       const errorMsg = `Failed to fetch plant details for ID ${plantId} from Perenual API: ${response.status} ${response.statusText}. Response: ${errorBody}`;
-      console.error(errorMsg);
-      // Return null or throw a more specific error based on your app's needs
-      // For now, returning null to allow the page to handle "not found" gracefully
-      return null;
+      console.error("Plant API Service: getPlantDetails - " + errorMsg);
+      throw new Error(`Perenual API request for details failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody}`);
     }
     const result = await response.json() as PerenualPlantDetailResponse;
+    console.log(`Plant API Service: Successfully fetched details for plant ID ${plantId}.`);
     return mapToPlantDetail(result);
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
-        throw error; // Re-throw the specific error to be caught by the UI
+        throw error; // Re-throw the specific error to be caught by the UI or higher-level handler
     }
     console.error(`Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`, error);
-    // Depending on how you want to handle this on the page, you might throw, or return null.
-    // Throwing will make it clearer that an unexpected error occurred.
+    // In a Cloud Function context, throwing here will likely result in a 500 error passed to the client.
+    // The client page should handle this.
     throw new Error('An unexpected error occurred while fetching plant details. Check server logs.');
   }
 }

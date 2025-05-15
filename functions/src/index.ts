@@ -1,28 +1,50 @@
-// functions/src/index.ts
-import * as functions from 'firebase-functions';
-import next from 'next';
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * import {onCall} from "firebase-functions/v2/https";
+ * import {onDocumentWritten} from "firebase-functions/v2/firestore";
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
 
-// Determine if running in development or production
-const dev = process.env.NODE_ENV !== 'production';
+// import {onRequest} from "firebase-functions/v2/https";
+// import * as logger from "firebase-functions/logger";
 
-// Initialize the Next.js app.
-// The 'dir' option points to the root of your Next.js project relative to the 'functions' directory.
-// When deployed, the 'functions' directory is at the root, so '../' points to the Next.js app root.
+// Start writing functions
+// https://firebase.google.com/docs/functions/typescript
+
+// export const helloWorld = onRequest((request, response) => {
+//   logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });
+
+import * as functions from "firebase-functions";
+import next from "next";
+import path from "path";
+
+// Ensure that relative paths are calculated from the Next.js project root
+// process.cwd() will be './functions' in the GCF environment, so we go up one level.
+const projectRoot = path.join(__dirname, "..", "..");
+
+const dev = process.env.NODE_ENV !== "production";
 const app = next({
-  dev, // This will be false in deployed Firebase Functions
-  conf: { distDir: '.next' }, // Specifies the .next directory relative to the Next.js project root
-  dir: '../', // Points to the root of your Next.js application
+  dev,
+  conf: { distDir: ".next" }, // Specifies the Next.js build output directory
+  dir: projectRoot, // Specifies the Next.js project directory
 });
-
 const handle = app.getRequestHandler();
 
-export const nextServer = functions
-  .region('us-central1') // You can change this to your preferred region
-  .runWith({ memory: '1GB' }) // Recommended memory for Next.js, can be '512MB', '1GB', '2GB'
-  .https.onRequest(async (request, response) => {
-    // Log the original URL for debugging (optional)
-    console.log(`[nextServer] Request for: ${request.originalUrl}`);
-    // Ensure Next.js is prepared before handling requests
+export const nextServer = functions.https.onRequest(async (req, res) => {
+  // Log to confirm the function is being invoked
+  console.log(`[nextServer] Function invoked. Request URL: ${req.url}. Request method: ${req.method}`);
+  console.log("[nextServer] Ensure NEXT_PUBLIC_PERENUAL_API_KEY is set in the function's runtime environment variables.");
+
+  try {
     await app.prepare();
-    return handle(request, response);
-  });
+    return handle(req, res);
+  } catch (error) {
+    console.error("[nextServer] Error preparing or handling request:", error);
+    res.status(500).send("Internal Server Error preparing Next.js app");
+    return; // Explicitly return to avoid further processing
+  }
+});
