@@ -2,7 +2,7 @@
 {
   "hosting": {
     "site": "urban-gardening-platform-462ba",
-    "public": "out",
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
