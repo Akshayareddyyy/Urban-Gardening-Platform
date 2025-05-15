@@ -23,13 +23,14 @@ const FeatureCard = ({
   imageAlt: string;
 }) => (
   <Card className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center">
-    <div className="md:w-2/5 w-full h-48 md:h-full relative">
+    <div className="md:w-2/5 w-full h-48 md:h-64 relative bg-muted"> {/* Changed md:h-full to md:h-64 and added bg-muted for fallback visibility */}
       <Image
         src={imageSrc}
         alt={imageAlt}
         layout="fill"
         objectFit="cover"
         data-ai-hint={imageHint}
+        className="rounded-t-lg md:rounded-l-lg md:rounded-tr-none" // Adjust rounding for different layouts
       />
     </div>
     <div className="md:w-3/5 p-6">
@@ -51,7 +52,7 @@ export function PublicLandingPage() {
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/80 via-primary to-green-700 text-primary-foreground rounded-lg shadow-2xl overflow-hidden mb-16">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20" 
-          style={{ backgroundImage: "url('https://placehold.co/1200x600.png?text=Urban+Garden+Montage')" }}
+          style={{ backgroundImage: "url('https://placehold.co/1200x600.png')" }} // Removed text query param
           data-ai-hint="urban garden montage"
         />
         <div className="container mx-auto px-4 text-center relative z-10">
