@@ -1,6 +1,7 @@
 {
   "projects": {
-    "Udur": "urban-gardening-platform"
+    "Udur": "urban-gardening-platform",
+    "default": "urban-gardening-platform"
   },
   "targets": {},
   "etags": {}
