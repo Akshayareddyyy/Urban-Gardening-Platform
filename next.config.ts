@@ -2,8 +2,7 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export', // Ensure static export for Firebase Hosting of static files
-
+  // REMOVED: output: 'export', // No longer exporting as a static site
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -11,7 +10,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // Required for static export with next/image
+    // REMOVED: unoptimized: true, // Image optimization can work with a server environment
     remotePatterns: [
       {
         protocol: 'https',

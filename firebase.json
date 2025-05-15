@@ -2,17 +2,21 @@
 {
   "hosting": {
     "site": "urban-gardening-platform-462ba",
-    "public": "out",
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "nextServer"
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
+  // Note: You will need to set up a Cloud Function (e.g., named 'nextServer').
+  // If you haven't already, run 'firebase init functions' in your project root
+  // and configure it to serve your Next.js app.
+  // Modern Firebase CLI with 'firebase-frameworks' might also handle this automatically
+  // during 'firebase deploy'.
 }
