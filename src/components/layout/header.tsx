@@ -5,7 +5,7 @@ import { SproutIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Search, Lightbulb, GalleryThumbnails, FlaskConical, Mail, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { Search, Lightbulb, GalleryThumbnails, FlaskConical, Mail, LogIn, UserPlus, LogOut, Inbox } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
@@ -20,6 +20,7 @@ const protectedNavItems = [
   { href: '/showcase', label: 'Showcase', icon: GalleryThumbnails, protected: true },
   { href: '/suggestions', label: 'Get Suggestions', icon: Lightbulb, protected: true },
   { href: '/fertilizer-guide', label: 'Fertilizer Guide', icon: FlaskConical, protected: true },
+  { href: '/admin/contact-messages', label: 'Inbox', icon: Inbox, protected: true }, // Added new admin link
 ];
 
 const authNavItems = [
