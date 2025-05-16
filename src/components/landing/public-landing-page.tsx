@@ -15,11 +15,9 @@ const FeatureCard = ({
   icon: React.ElementType;
   title: string;
   description: string;
-  // Removed imageSrc, imageHint, imageAlt props
 }) => (
   <Card className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
-    {/* Image div and Image component removed */}
-    <div className="w-full p-6"> {/* Content div now takes full width */}
+    <div className="w-full p-6">
       <div className="flex items-center mb-3">
         <Icon className="h-8 w-8 text-primary mr-3" />
         <CardTitle className="text-2xl text-primary">{title}</CardTitle>
@@ -36,11 +34,7 @@ export function PublicLandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/80 via-primary to-green-700 text-primary-foreground rounded-lg shadow-2xl overflow-hidden mb-16">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: "url('https://placehold.co/1200x600.png')" }}
-          data-ai-hint="urban garden montage"
-        />
+        {/* Removed background image div */}
         <div className="container mx-auto px-4 text-center relative z-10">
           <Leaf className="mx-auto h-24 w-24 mb-6 text-accent animate-pulse" />
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 tracking-tight">
@@ -82,25 +76,21 @@ export function PublicLandingPage() {
               icon={Search}
               title="Discover a World of Plants"
               description="Effortlessly search our extensive database to find detailed information on a vast array of plants suitable for urban environments. Learn about their care, sunlight needs, and more."
-              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={Lightbulb}
               title="AI-Powered Plant Suggestions"
               description="Not sure what to grow? Tell us about your climate and available space, and our intelligent system will suggest the perfect plants tailored to your unique urban setting."
-              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={FlaskConical}
               title="Smart Fertilizer Guidance"
               description="Take the guesswork out of plant nutrition. Get AI-driven recommendations for the best fertilizers based on your plant type and specific growth goals for optimal health."
-              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={Users}
               title="Community Growth Showcase"
               description="Share your urban gardening triumphs, see what others are growing, and get inspired! Our showcase is a vibrant space to connect with fellow plant enthusiasts."
-              // Removed imageSrc, imageHint, imageAlt
             />
           </div>
         </div>
