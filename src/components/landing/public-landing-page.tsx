@@ -11,29 +11,15 @@ const FeatureCard = ({
   icon: Icon,
   title,
   description,
-  imageSrc,
-  imageHint,
-  imageAlt,
 }: {
   icon: React.ElementType;
   title: string;
   description: string;
-  imageSrc: string;
-  imageHint: string;
-  imageAlt: string;
+  // Removed imageSrc, imageHint, imageAlt props
 }) => (
-  <Card className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center">
-    <div className="md:w-2/5 w-full h-48 md:h-64 relative bg-muted"> {/* Changed md:h-full to md:h-64 and added bg-muted for fallback visibility */}
-      <Image
-        src={imageSrc}
-        alt={imageAlt}
-        layout="fill"
-        objectFit="cover"
-        data-ai-hint={imageHint}
-        className="rounded-t-lg md:rounded-l-lg md:rounded-tr-none" // Adjust rounding for different layouts
-      />
-    </div>
-    <div className="md:w-3/5 p-6">
+  <Card className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+    {/* Image div and Image component removed */}
+    <div className="w-full p-6"> {/* Content div now takes full width */}
       <div className="flex items-center mb-3">
         <Icon className="h-8 w-8 text-primary mr-3" />
         <CardTitle className="text-2xl text-primary">{title}</CardTitle>
@@ -50,9 +36,9 @@ export function PublicLandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/80 via-primary to-green-700 text-primary-foreground rounded-lg shadow-2xl overflow-hidden mb-16">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20" 
-          style={{ backgroundImage: "url('https://placehold.co/1200x600.png')" }} // Removed text query param
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: "url('https://placehold.co/1200x600.png')" }}
           data-ai-hint="urban garden montage"
         />
         <div className="container mx-auto px-4 text-center relative z-10">
@@ -96,33 +82,25 @@ export function PublicLandingPage() {
               icon={Search}
               title="Discover a World of Plants"
               description="Effortlessly search our extensive database to find detailed information on a vast array of plants suitable for urban environments. Learn about their care, sunlight needs, and more."
-              imageSrc="https://placehold.co/600x400.png"
-              imageHint="plant database search"
-              imageAlt="Illustration of searching for plants"
+              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={Lightbulb}
               title="AI-Powered Plant Suggestions"
               description="Not sure what to grow? Tell us about your climate and available space, and our intelligent system will suggest the perfect plants tailored to your unique urban setting."
-              imageSrc="https://placehold.co/600x400.png"
-              imageHint="ai suggestions plants"
-              imageAlt="Illustration of AI suggesting plants"
+              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={FlaskConical}
               title="Smart Fertilizer Guidance"
               description="Take the guesswork out of plant nutrition. Get AI-driven recommendations for the best fertilizers based on your plant type and specific growth goals for optimal health."
-              imageSrc="https://placehold.co/600x400.png"
-              imageHint="fertilizer advice plants"
-              imageAlt="Illustration of fertilizer guidance"
+              // Removed imageSrc, imageHint, imageAlt
             />
             <FeatureCard
               icon={Users}
               title="Community Growth Showcase"
               description="Share your urban gardening triumphs, see what others are growing, and get inspired! Our showcase is a vibrant space to connect with fellow plant enthusiasts."
-              imageSrc="https://placehold.co/600x400.png"
-              imageHint="gardening community showcase"
-              imageAlt="Illustration of community plant showcase"
+              // Removed imageSrc, imageHint, imageAlt
             />
           </div>
         </div>
