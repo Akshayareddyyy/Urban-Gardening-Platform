@@ -5,22 +5,23 @@ import { SproutIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Search, Lightbulb, GalleryThumbnails, FlaskConical, Mail, LogIn, UserPlus, LogOut, Inbox } from 'lucide-react';
+import { Search, Lightbulb, GalleryThumbnails, FlaskConical, LogIn, UserPlus, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
-const commonNavItems = [
-  { href: '/contact', label: 'Contact Us', icon: Mail, protected: false },
-];
+// Common nav items are removed as "Contact Us" was the only one.
+// If you add other common items, this array can be reinstated.
+// const commonNavItems = [
+// ];
 
 const protectedNavItems = [
   { href: '/', label: 'Search Plants', icon: Search, protected: true },
   { href: '/showcase', label: 'Showcase', icon: GalleryThumbnails, protected: true },
   { href: '/suggestions', label: 'Get Suggestions', icon: Lightbulb, protected: true },
   { href: '/fertilizer-guide', label: 'Fertilizer Guide', icon: FlaskConical, protected: true },
-  { href: '/admin/contact-messages', label: 'Inbox', icon: Inbox, protected: true }, // Added new admin link
+  // Removed: { href: '/admin/contact-messages', label: 'Inbox', icon: Inbox, protected: true },
 ];
 
 const authNavItems = [
@@ -45,10 +46,13 @@ export function AppHeader() {
     }
   };
 
-  let currentNavItems = [...commonNavItems];
+  let currentNavItems = [];
   if (isAuthenticated) {
-    currentNavItems = [...protectedNavItems, ...commonNavItems];
+    currentNavItems = [...protectedNavItems];
   }
+  // If there were commonNavItems, they would be added here:
+  // currentNavItems = [...currentNavItems, ...commonNavItems];
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { AppHeader } from '@/components/layout/header';
+import { AppFooter } from '@/components/layout/footer'; // Import the new footer
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/context/AuthContext';
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             <main className="flex-grow container mx-auto px-4 py-8 md:px-6 lg:px-8">
               {children}
             </main>
+            <AppFooter /> {/* Add the footer here */}
           </div>
           <Toaster />
         </AuthProvider>
