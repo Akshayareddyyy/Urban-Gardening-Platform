@@ -11,17 +11,11 @@ import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
-// Common nav items are removed as "Contact Us" was the only one.
-// If you add other common items, this array can be reinstated.
-// const commonNavItems = [
-// ];
-
 const protectedNavItems = [
   { href: '/', label: 'Search Plants', icon: Search, protected: true },
   { href: '/showcase', label: 'Showcase', icon: GalleryThumbnails, protected: true },
   { href: '/suggestions', label: 'Get Suggestions', icon: Lightbulb, protected: true },
   { href: '/fertilizer-guide', label: 'Fertilizer Guide', icon: FlaskConical, protected: true },
-  // Removed: { href: '/admin/contact-messages', label: 'Inbox', icon: Inbox, protected: true },
 ];
 
 const authNavItems = [
@@ -39,7 +33,7 @@ export function AppHeader() {
     try {
       await signOut(auth);
       toast({ title: "Logged Out", description: "You have been successfully logged out." });
-      router.push('/login'); // Redirect to login page after logout
+      router.push('/login'); 
     } catch (error) {
       console.error("Error logging out:", error);
       toast({ variant: "destructive", title: "Logout Error", description: "Failed to log out. Please try again." });
@@ -50,18 +44,19 @@ export function AppHeader() {
   if (isAuthenticated) {
     currentNavItems = [...protectedNavItems];
   }
-  // If there were commonNavItems, they would be added here:
-  // currentNavItems = [...currentNavItems, ...commonNavItems];
 
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
-        <Link href={isAuthenticated ? "/" : "/login"} className="flex items-center space-x-2 mr-6">
+        {/* Logo - mr-auto will push everything else to the right */}
+        <Link href={isAuthenticated ? "/" : "/login"} className="flex items-center space-x-2 mr-auto">
           <SproutIcon className="h-8 w-8 text-primary" />
           <span className="font-bold text-xl text-primary">Urban Gardening</span>
         </Link>
-        <nav className="flex items-center space-x-1 md:space-x-0 flex-grow">
+
+        {/* Main Navigation items (Search Plants, Showcase, etc.) */}
+        <nav className="flex items-center space-x-1 md:space-x-0">
           {currentNavItems.map((item) => (
             <Button
               key={item.href}
@@ -81,7 +76,14 @@ export function AppHeader() {
             </Button>
           ))}
         </nav>
-        <nav className="flex items-center space-x-1 md:space-x-0 ml-auto">
+
+        {/* Spacer between main nav and auth nav, only if main nav has items */}
+        {currentNavItems.length > 0 && (
+          <div className="w-2 md:w-4" />
+        )}
+
+        {/* Authentication Navigation (Login/Signup or Logout) */}
+        <nav className="flex items-center space-x-1 md:space-x-0">
           {isAuthenticated ? (
             <Button
               variant="ghost"
