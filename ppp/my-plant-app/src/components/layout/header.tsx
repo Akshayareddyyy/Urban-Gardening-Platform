@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Added Avatar import
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Ensure Avatar is imported
 
 const protectedNavItems = [
   { href: '/', label: 'Search Plants', icon: Search, protected: true },
