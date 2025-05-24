@@ -15,22 +15,24 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
 
   if (children) {
     // If children are provided, they handle rendering the value.
-    // We don't need to calculate displayValue for the <p> tag in this case,
-    // but we still render the label and icon.
-    displayValue = ''; // Set to empty as children will render the value part
+    displayValue = ''; 
   } else if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
     displayValue = 'N/A';
   } else if (typeof value === 'boolean') {
     displayValue = value ? 'Yes' : 'No';
   } else if (Array.isArray(value)) {
     // Filter out empty or "N/A" strings from array before joining
-    const filteredArray = value.filter(item => typeof item === 'string' && item.trim() !== '' && item.toLowerCase() !== 'n/a');
+    const filteredArray = value.map(s => String(s).trim()).filter(s => s && s.toLowerCase() !== 'n/a' && s !== '');
     displayValue = filteredArray.length > 0 ? filteredArray.join(', ') : 'N/A';
   } else if (typeof value === 'string' && value.toLowerCase() === 'n/a') {
     displayValue = 'N/A';
   } else {
     displayValue = String(value);
   }
+
+  // Only render the item if there are children or if the displayValue is not "N/A" (unless it was explicitly passed as "N/A" for composite items)
+  // This was the previous logic. The new approach is to always render the item and let DetailItem show "N/A".
+  // The parent component PlantDetailDisplay will now ensure DetailItem is always called.
 
   return (
     <div className="flex items-start space-x-3">
@@ -50,6 +52,9 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
 
 export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
   const imageUrl = plant.default_image?.medium_url || plant.default_image?.regular_url || plant.default_image?.original_url;
+
+  const hasMeaningfulDescription = plant.description && plant.description.trim() !== '' && plant.description.toLowerCase() !== 'n/a';
+  const hasMeaningfulOtherNames = plant.other_name && plant.other_name.length > 0 && plant.other_name.some(name => name.trim() !== '' && name.toLowerCase() !== 'n/a');
 
   return (
     <Card className="overflow-hidden shadow-xl">
@@ -73,57 +78,58 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
         </div>
         <div className="absolute bottom-0 left-0 p-6 md:p-8">
             <CardTitle className="text-3xl md:text-4xl font-bold text-primary-foreground drop-shadow-md">{plant.common_name}</CardTitle>
-            {plant.scientific_name && plant.scientific_name.length > 0 && plant.scientific_name.some(name => name.trim().toLowerCase() !== 'n/a' && name.trim() !== '') && (
+            {(plant.scientific_name && plant.scientific_name.length > 0 && plant.scientific_name.some(name => String(name).trim().toLowerCase() !== 'n/a' && String(name).trim() !== '')) ? (
               <CardDescription className="text-lg text-primary-foreground/90 italic mt-1 drop-shadow-sm">
-                {plant.scientific_name.filter(name => name.trim().toLowerCase() !== 'n/a' && name.trim() !== '').join(', ')}
+                {plant.scientific_name.filter(name => String(name).trim().toLowerCase() !== 'n/a' && String(name).trim() !== '').join(', ')}
               </CardDescription>
-            )}
+            ) : null}
         </div>
       </CardHeader>
       <CardContent className="p-6 md:p-8 space-y-6">
-        {plant.description && plant.description.trim() !== '' && plant.description.toLowerCase() !== 'n/a' && (
-          <>
-            <DetailItem icon={Info} label="Description" value={plant.description} />
-            <Separator />
-          </>
-        )}
+        <DetailItem icon={Info} label="Description" value={plant.description} />
+        {hasMeaningfulDescription && <Separator />}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <DetailItem icon={Leaf} label="Type" value={plant.type} />
           <DetailItem icon={Sun} label="Sunlight" value={plant.sunlight} />
           <DetailItem icon={Droplets} label="Watering" value={plant.watering} />
+          
           {(plant.watering_general_benchmark?.value && plant.watering_general_benchmark.unit && plant.watering_general_benchmark.value.toLowerCase() !== 'n/a') ? (
             <DetailItem icon={Droplets} label="Watering Benchmark" value={`${plant.watering_general_benchmark.value} ${plant.watering_general_benchmark.unit}`} />
           ) : (
             <DetailItem icon={Droplets} label="Watering Benchmark" value="N/A" />
           )}
+
           <DetailItem icon={CalendarDays} label="Cycle" value={plant.cycle} />
           <DetailItem icon={Settings2} label="Care Level" value={plant.care_level} />
           <DetailItem icon={TrendingUp} label="Growth Rate" value={plant.growth_rate} />
-          {(plant.hardiness?.min && plant.hardiness?.max && plant.hardiness.min.toLowerCase() !== 'n/a') ? ( 
+          
+          {(plant.hardiness?.min && plant.hardiness?.max && String(plant.hardiness.min).toLowerCase() !== 'n/a') ? ( 
             <DetailItem icon={Thermometer} label="Hardiness Zones" value={`${plant.hardiness.min} - ${plant.hardiness.max}`} />
           ) : (
              <DetailItem icon={Thermometer} label="Hardiness Zones" value="N/A" />
           )}
+          
           {(plant.dimensions?.min_value && plant.dimensions?.max_value && plant.dimensions?.unit) ? (
              <DetailItem icon={Milestone} label={`Dimensions (${plant.dimensions.type || 'Height'})`} value={`${plant.dimensions.min_value}-${plant.dimensions.max_value} ${plant.dimensions.unit}`} />
           ) : (
              <DetailItem icon={Milestone} label={`Dimensions (${plant.dimensions?.type || 'Height'})`} value="N/A" />
           )}
+
           <DetailItem icon={Scissors} label="Maintenance" value={plant.maintenance} />
           <DetailItem icon={ShieldCheck} label="Drought Tolerant" value={plant.drought_tolerant} />
           <DetailItem icon={ShieldAlert} label="Poisonous to Humans" value={plant.poisonous_to_humans === 1 ? "Yes" : (plant.poisonous_to_humans === 0 ? "No" : "N/A") } />
           <DetailItem icon={ShieldAlert} label="Poisonous to Pets" value={plant.poisonous_to_pets === 1 ? "Yes" : (plant.poisonous_to_pets === 0 ? "No" : "N/A") } />
-           <DetailItem icon={Info} label="Indoor Plant" value={plant.indoor} />
+          <DetailItem icon={Info} label="Indoor Plant" value={plant.indoor} />
         </div>
 
-        {plant.other_name && plant.other_name.length > 0 && plant.other_name.some(name => name.trim() !== '' && name.toLowerCase() !== 'n/a') && (
+        {hasMeaningfulOtherNames && (
           <>
             <Separator />
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Other Names</h3>
               <div className="flex flex-wrap gap-2">
-                {plant.other_name.filter(name => name.trim() !== '' && name.toLowerCase() !== 'n/a').map(name => <Badge key={name} variant="outline">{name}</Badge>)}
+                {plant.other_name!.filter(name => name.trim() !== '' && name.toLowerCase() !== 'n/a').map(name => <Badge key={name} variant="outline">{name}</Badge>)}
               </div>
             </div>
           </>
