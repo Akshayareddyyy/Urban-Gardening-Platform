@@ -163,11 +163,10 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
       const errorBody = await response.text();
       const errorMsg = `Failed to fetch plants from Perenual API: ${response.status} ${response.statusText}. Response: ${errorBody}`;
       console.error("Plant API Service: searchPlants - " + errorMsg);
-      throw new Error(`Perenual API request failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody}`);
+      throw new Error(`Perenual API request failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody.substring(0, 200)}`);
     }
     const result = await response.json() as PerenualPlantListResponse;
     console.log(`Plant API Service: Received ${result.data?.length || 0} items from Perenual for query "${query}".`);
-    // Log the first few items of the raw data to inspect available fields
     if (result.data && result.data.length > 0) {
       console.log('Plant API Service: RAW Perenual API Search Result Data (first 1-2 items):', JSON.stringify(result.data.slice(0, 2), null, 2));
     } else if (result.data) {
@@ -181,7 +180,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
         throw error;
     }
     console.error('Error during Perenual API call or JSON parsing in searchPlants:', error);
-    throw new Error('An unexpected error occurred while searching for plants. Check server logs for details.');
+    throw new Error('Search failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
 
@@ -209,10 +208,10 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
       const errorBody = await response.text();
       const errorMsg = `Failed to fetch plant details for ID ${plantId} from Perenual API: ${response.status} ${response.statusText}. Response: ${errorBody}`;
       console.error("Plant API Service: getPlantDetails - " + errorMsg);
-      throw new Error(`Perenual API request for details failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody}`);
+      throw new Error(`Perenual API request for details failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody.substring(0, 200)}`);
     }
     const result = await response.json() as PerenualPlantDetailResponse;
-    console.log(`Plant API Service: RAW Perenual API Response for plant ID ${plantId}:`, JSON.stringify(result, null, 2)); // Log raw response
+    console.log(`Plant API Service: RAW Perenual API Response for plant ID ${plantId}:`, JSON.stringify(result, null, 2));
     console.log(`Plant API Service: Successfully fetched details for plant ID ${plantId}.`);
     return mapToPlantDetail(result);
   } catch (error) {
@@ -220,7 +219,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
         throw error; 
     }
     console.error(`Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`, error);
-    throw new Error('An unexpected error occurred while fetching plant details. Check server logs.');
+    throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
     
