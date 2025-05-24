@@ -179,7 +179,18 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     if (error instanceof MissingApiKeyError) {
         throw error;
     }
-    console.error('Error during Perenual API call or JSON parsing in searchPlants:', error);
+    // Enhanced error logging for the server terminal
+    let detailedLogMessage = 'SERVER_LOG: Error during Perenual API call or JSON parsing in searchPlants:';
+    if (error instanceof Error) {
+      detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
+      if (error.stack) {
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log part of the stack
+      }
+    } else {
+      detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
+    }
+    console.error(detailedLogMessage);
+    // This generic message is what the client-side will receive
     throw new Error('Search failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
@@ -218,7 +229,18 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     if (error instanceof MissingApiKeyError) {
         throw error; 
     }
-    console.error(`Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`, error);
+    // Enhanced error logging for the server terminal
+    let detailedLogMessage = `SERVER_LOG: Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`;
+    if (error instanceof Error) {
+      detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
+      if (error.stack) {
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log part of the stack
+      }
+    } else {
+      detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
+    }
+    console.error(detailedLogMessage);
+    // This generic message is what the client-side will receive
     throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
