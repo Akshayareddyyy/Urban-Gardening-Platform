@@ -34,7 +34,6 @@ export function PublicLandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/80 via-primary to-green-700 text-primary-foreground rounded-lg shadow-2xl overflow-hidden mb-16">
-        {/* Removed background image div */}
         <div className="container mx-auto px-4 text-center relative z-10">
           <Leaf className="mx-auto h-24 w-24 mb-6 text-accent animate-pulse" />
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 tracking-tight">
