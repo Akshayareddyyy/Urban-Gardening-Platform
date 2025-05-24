@@ -190,7 +190,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
     }
     console.error(detailedLogMessage);
-    // This generic message is what the client-side will receive
+    // This more instructive message is what the client-side will receive
     throw new Error('Search failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
@@ -240,7 +240,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
     }
     console.error(detailedLogMessage);
-    // This generic message is what the client-side will receive
+    // This more instructive message is what the client-side will receive
     throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
