@@ -7,12 +7,11 @@ import { ShowcaseList } from '@/components/showcase/showcase-list';
 import type { ShowcasePost } from '@/types/showcase';
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid'; 
-import { Users } from 'lucide-react';
+import { Users, Leaf } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
-
 const initialPosts: ShowcasePost[] = [
-  // Removed initial posts
+  // Initial posts are removed, showcase starts empty
 ];
 
 export default function ShowcasePage() {
@@ -23,6 +22,7 @@ export default function ShowcasePage() {
 
   const handleAddShowcasePost = async (data: ShowcaseFormValues, imageFile: File) => {
     setIsLoading(true);
+    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000)); 
 
     const reader = new FileReader();
@@ -33,7 +33,7 @@ export default function ShowcasePage() {
         userName: data.userName,
         userAvatarUrl: `https://placehold.co/64x64.png?text=${data.userName.substring(0,2).toUpperCase()}`, 
         description: data.description,
-        imagePreviewUrl: reader.result as string,
+        imagePreviewUrl: reader.result as string, // This will be a data URI
         submittedAt: new Date(),
         dataAiHint: `${data.plantName.split(" ")[0]} user project` 
       };
@@ -72,17 +72,32 @@ export default function ShowcasePage() {
           </p>
         </div>
 
-        <ShowcaseForm 
-          ref={formRef}
-          onSubmit={handleAddShowcasePost} 
-          isLoading={isLoading} 
-        />
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12">
+          {/* Left Column: Form */}
+          <aside className="lg:w-1/3 lg:sticky lg:top-24 self-start h-fit space-y-6"> {/* Added self-start for sticky behavior */}
+            <div className="p-6 bg-card rounded-lg shadow-lg border">
+              <h2 className="text-2xl font-semibold text-primary mb-1 flex items-center">
+                <Leaf className="h-6 w-6 mr-2 text-accent" />
+                Share Your Green Success!
+              </h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                Inspire others by showcasing your plant's progress.
+              </p>
+              <ShowcaseForm 
+                ref={formRef}
+                onSubmit={handleAddShowcasePost} 
+                isLoading={isLoading} 
+              />
+            </div>
+          </aside>
 
-        <div className="mt-16">
-          <h2 className="text-3xl font-semibold text-center text-primary mb-10">
-            Our Community's Green Gallery
-          </h2>
-          <ShowcaseList posts={posts} />
+          {/* Right Column: List */}
+          <main className="lg:w-2/3">
+            <h2 className="text-3xl font-semibold text-primary mb-10 text-center lg:text-left">
+              Our Community's Green Gallery
+            </h2>
+            <ShowcaseList posts={posts} />
+          </main>
         </div>
       </section>
     </ProtectedRoute>
