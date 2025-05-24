@@ -145,7 +145,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   
   console.log(`Plant API Service: searchPlants called for query "${query}". API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   if (!apiKey) {
-    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Please set it in your .env file (for local dev) or Cloud Function environment variables (for deployment). Perenual API cannot be called.';
+    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
     console.error("CRITICAL: searchPlants - " + errorMsg);
     throw new MissingApiKeyError(errorMsg);
   }
@@ -190,7 +190,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
   console.log(`Plant API Service: getPlantDetails called for ID ${plantId}. API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   try {
     if (!apiKey) {
-      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Plant details cannot be fetched. Set in .env (local) or Cloud Function env vars (deployed). Perenual API cannot be called.';
+      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Plant details cannot be fetched. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
       console.error("CRITICAL: getPlantDetails - " + errorMsg);
       throw new MissingApiKeyError(errorMsg);
     }
@@ -222,4 +222,6 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
   }
 }
+    
+
     
