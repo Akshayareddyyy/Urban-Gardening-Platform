@@ -23,7 +23,6 @@ import Image from 'next/image';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
 
-// userName removed from schema
 const showcaseFormSchema = z.object({
   plantName: z.string().min(2, { message: "Plant name must be at least 2 characters." }).max(50, { message: "Plant name cannot exceed 50 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(500, { message: "Description cannot exceed 500 characters." }),
@@ -36,17 +35,15 @@ const showcaseFormSchema = z.object({
     ),
 });
 
-// userName removed from ShowcaseFormValues
-export type ShowcaseFormValues = Omit<z.infer<typeof showcaseFormSchema>, 'userName'>;
+export type ShowcaseFormValues = z.infer<typeof showcaseFormSchema>;
 
 type ShowcaseFormProps = {
-  // onSubmit no longer expects userName in its data argument
   onSubmit: (data: ShowcaseFormValues, imageFile: File) => Promise<void>;
   isLoading: boolean;
 };
 
 export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProps>(({ onSubmit, isLoading }, ref) => {
-  const form = useForm<z.infer<typeof showcaseFormSchema>>({ // Use inferred schema type directly
+  const form = useForm<ShowcaseFormValues>({
     resolver: zodResolver(showcaseFormSchema),
     defaultValues: {
       plantName: '',
@@ -56,13 +53,13 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      form.setValue('image', dataTransfer.files, { shouldValidate: true });
+      setImageFile(file); // Store the file object
+      form.setValue('image', event.target.files as FileList, { shouldValidate: true });
       
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -70,21 +67,26 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
       };
       reader.readAsDataURL(file);
     } else {
+      setImageFile(null);
       form.resetField('image');
       setImagePreview(null);
     }
   };
 
-  const handleSubmit = async (values: z.infer<typeof showcaseFormSchema>) => { // Use inferred schema type
-    const imageFile = values.image[0];
-    // Pass values (which no longer include userName) to onSubmit
-    await onSubmit(values as ShowcaseFormValues, imageFile); 
+  const handleSubmit = async (values: ShowcaseFormValues) => {
+    if (imageFile) {
+      await onSubmit(values, imageFile);
+    } else {
+      // This case should ideally be caught by form validation
+      form.setError("image", { type: "manual", message: "Image is required." });
+    }
   };
   
   useImperativeHandle(ref, () => ({
     reset: () => {
       form.reset();
       setImagePreview(null);
+      setImageFile(null);
     }
   }));
 
@@ -105,7 +107,6 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
             </FormItem>
           )}
         />
-        {/* userName FormField removed */}
         <FormField
           control={form.control}
           name="description"
@@ -135,7 +136,7 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
                  <Input 
                     type="file" 
                     accept={ACCEPTED_IMAGE_TYPES.join(',')}
-                    onChange={handleImageChange}
+                    onChange={handleImageChange} // Use custom handler
                     className="text-base file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                   />
               </FormControl>
@@ -148,7 +149,7 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
         {imagePreview && (
           <div className="mt-4">
             <p className="text-sm font-medium text-muted-foreground mb-2">Image Preview:</p>
-            <Image src={imagePreview} alt="Selected plant preview" width={200} height={200} className="rounded-md border object-cover aspect-square" />
+            <Image src={imagePreview} alt="Selected plant preview" width={200} height={200} className="rounded-md border object-cover aspect-square" data-ai-hint="plant preview" />
           </div>
         )}
 

@@ -1,13 +1,16 @@
 
 import type { ShowcasePost } from '@/types/showcase';
 import { ShowcaseCard } from './showcase-card';
-import { GalleryThumbnails, Info } from 'lucide-react';
+import { GalleryThumbnails } from 'lucide-react';
 
 interface ShowcaseListProps {
   posts: ShowcasePost[];
+  currentUserId: string | null;
+  onDeletePost: (postId: string) => void;
+  isDeletingPostId: string | null;
 }
 
-export function ShowcaseList({ posts }: ShowcaseListProps) {
+export function ShowcaseList({ posts, currentUserId, onDeletePost, isDeletingPostId }: ShowcaseListProps) {
   if (posts.length === 0) {
     return (
       <div className="text-center py-10 text-muted-foreground">
@@ -19,9 +22,15 @@ export function ShowcaseList({ posts }: ShowcaseListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Adjusted grid columns */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {posts.map((post) => (
-        <ShowcaseCard key={post.id} post={post} />
+        <ShowcaseCard 
+          key={post.id} 
+          post={post} 
+          currentUserId={currentUserId}
+          onDelete={onDeletePost}
+          isDeleting={isDeletingPostId === post.id}
+        />
       ))}
     </div>
   );

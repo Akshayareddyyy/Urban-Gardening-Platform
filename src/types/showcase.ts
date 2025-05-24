@@ -1,11 +1,14 @@
 
+import type { Timestamp } from 'firebase/firestore';
+
 export interface ShowcasePost {
-  id: string;
+  id: string; // Firestore document ID
   plantName: string;
-  userName: string;
-  userAvatarUrl?: string; // Optional: URL for user's avatar
+  userName: string; // Creator's display name
+  userAvatarUrl?: string;
+  userId: string; // Creator's Firebase UID
   description: string;
-  imagePreviewUrl: string; // Data URI or URL for the image
-  submittedAt: Date;
-  dataAiHint?: string; // Optional: Hint for AI image search
+  imageUrl: string; // URL from Firebase Storage
+  submittedAt: Date | Timestamp; // Will be Timestamp from Firestore, converted to Date for client
+  dataAiHint?: string;
 }
