@@ -9,7 +9,7 @@ console.log(
 );
 
 import type { Plant, PlantSummary } from '@/types/plant';
-import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
+import { MissingApiKeyError } from '@/lib/errors'; 
 
 const PERENUAL_API_URL = 'https://perenual.com/api';
 
@@ -141,7 +141,6 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 
 
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
-  // Use the constant defined at the module scope
   const apiKey = PERENUAL_API_KEY_FROM_ENV;
   
   console.log("Plant API Service: Initiating plant search. Key available:", apiKey ? 'Yes' : 'No');
@@ -179,7 +178,6 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
 }
 
 export async function getPlantDetails(plantId: number): Promise<Plant | null> {
-  // Use the constant defined at the module scope
   const apiKey = PERENUAL_API_KEY_FROM_ENV;
 
   console.log("Plant API Service: Initiating plant details fetch. Key available:", apiKey ? 'Yes' : 'No');
@@ -206,15 +204,14 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
       throw new Error(`Perenual API request for details failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody}`);
     }
     const result = await response.json() as PerenualPlantDetailResponse;
+    console.log(`Plant API Service: RAW Perenual API Response for plant ID ${plantId}:`, JSON.stringify(result, null, 2)); // Log raw response
     console.log(`Plant API Service: Successfully fetched details for plant ID ${plantId}.`);
     return mapToPlantDetail(result);
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
-        throw error; // Re-throw the specific error to be caught by the UI or higher-level handler
+        throw error; 
     }
     console.error(`Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`, error);
-    // In a Cloud Function context, throwing here will likely result in a 500 error passed to the client.
-    // The client page should handle this.
     throw new Error('An unexpected error occurred while fetching plant details. Check server logs.');
   }
 }

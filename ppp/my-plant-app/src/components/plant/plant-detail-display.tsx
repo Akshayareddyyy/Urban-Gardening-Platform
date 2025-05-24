@@ -18,15 +18,18 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
     // We don't need to calculate finalDisplayValue for the <p> tag in this case.
     finalDisplayValue = ''; // Or some other indicator if needed, but children take precedence.
   } else if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
-    finalDisplayValue = 'N/A'; // Our "Not Available" indicator for truly missing data
+    finalDisplayValue = 'N/A';
   } else if (typeof value === 'boolean') {
     finalDisplayValue = value ? 'Yes' : 'No';
   } else if (Array.isArray(value)) {
     // Filter out empty or "N/A" strings from array before joining
     const filteredArray = value.filter(item => typeof item === 'string' && item.trim() !== '' && item.toLowerCase() !== 'n/a');
     finalDisplayValue = filteredArray.length > 0 ? filteredArray.join(', ') : 'N/A';
-  } else {
-    finalDisplayValue = String(value); // This will display numbers and any non-empty string from API (even if that string is "N/A")
+  } else if (String(value).toLowerCase() === 'n/a') {
+    finalDisplayValue = 'N/A';
+  }
+   else {
+    finalDisplayValue = String(value);
   }
 
   return (
@@ -35,9 +38,8 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
       <div>
         <h3 className="text-md font-semibold text-foreground">{label}</h3>
         {children ? (
-          children // Render children if provided
+          children
         ) : (
-          // Otherwise, render the calculated finalDisplayValue
           <p className="text-muted-foreground text-sm whitespace-pre-wrap">{finalDisplayValue}</p>
         )}
       </div>
@@ -96,7 +98,7 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
           <DetailItem icon={CalendarDays} label="Cycle" value={plant.cycle} />
           <DetailItem icon={Settings2} label="Care Level" value={plant.care_level} />
           <DetailItem icon={TrendingUp} label="Growth Rate" value={plant.growth_rate} />
-          {plant.hardiness?.min && plant.hardiness?.max && ( // Check if hardiness object and its properties exist
+          {plant.hardiness?.min && plant.hardiness?.max && ( 
             <DetailItem icon={Thermometer} label="Hardiness Zones" value={`${plant.hardiness.min} - ${plant.hardiness.max}`} />
           )}
           {plant.dimensions?.min_value && plant.dimensions?.max_value && plant.dimensions?.unit && (
