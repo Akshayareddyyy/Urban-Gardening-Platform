@@ -30,10 +30,6 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
     displayValue = String(value);
   }
 
-  // Only render the item if there are children or if the displayValue is not "N/A" (unless it was explicitly passed as "N/A" for composite items)
-  // This was the previous logic. The new approach is to always render the item and let DetailItem show "N/A".
-  // The parent component PlantDetailDisplay will now ensure DetailItem is always called.
-
   return (
     <div className="flex items-start space-x-3">
       <Icon className="h-6 w-6 text-accent mt-1 shrink-0" />
@@ -51,6 +47,8 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
 
 
 export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
+  console.log("PlantDetailDisplay received plant prop:", JSON.stringify(plant, null, 2));
+
   const imageUrl = plant.default_image?.medium_url || plant.default_image?.regular_url || plant.default_image?.original_url;
 
   const hasMeaningfulDescription = plant.description && plant.description.trim() !== '' && plant.description.toLowerCase() !== 'n/a';
