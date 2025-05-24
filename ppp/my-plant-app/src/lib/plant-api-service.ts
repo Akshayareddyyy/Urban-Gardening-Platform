@@ -143,9 +143,9 @@ function mapToPlantDetail(item: PerenualPlantDetailResponse): Plant {
 export async function searchPlants(query: string): Promise<PlantSummary[]> {
   const apiKey = PERENUAL_API_KEY_FROM_ENV;
   
-  console.log("Plant API Service: Initiating plant search. Key available:", apiKey ? 'Yes' : 'No');
+  console.log(`Plant API Service: searchPlants called for query "${query}". API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   if (!apiKey) {
-    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Please set it in your .env file (for local dev) or Cloud Function environment variables (for deployment).';
+    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Please set it in your .env file (for local dev) or Cloud Function environment variables (for deployment). Perenual API cannot be called.';
     console.error("CRITICAL: searchPlants - " + errorMsg);
     throw new MissingApiKeyError(errorMsg);
   }
@@ -155,7 +155,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   }
 
   const url = `${PERENUAL_API_URL}/species-list?key=${apiKey}&q=${encodeURIComponent(query)}`;
-  console.log(`Plant API Service: Fetching from Perenual URL: ${url.replace(apiKey, '[REDACTED_API_KEY]')}`);
+  console.log(`Plant API Service: Attempting to fetch from Perenual. Key: "${apiKey.substring(0,5)}...". URL: ${url.replace(apiKey, '[REDACTED_API_KEY]')}`);
 
   try {
     const response = await fetch(url, { cache: 'no-store' });
@@ -188,10 +188,10 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
 export async function getPlantDetails(plantId: number): Promise<Plant | null> {
   const apiKey = PERENUAL_API_KEY_FROM_ENV;
 
-  console.log("Plant API Service: Initiating plant details fetch. Key available:", apiKey ? 'Yes' : 'No');
+  console.log(`Plant API Service: getPlantDetails called for ID ${plantId}. API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   try {
     if (!apiKey) {
-      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Plant details cannot be fetched. Set in .env (local) or Cloud Function env vars (deployed).';
+      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured. Plant details cannot be fetched. Set in .env (local) or Cloud Function env vars (deployed). Perenual API cannot be called.';
       console.error("CRITICAL: getPlantDetails - " + errorMsg);
       throw new MissingApiKeyError(errorMsg);
     }
@@ -202,7 +202,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     }
     
     const url = `${PERENUAL_API_URL}/species/details/${plantId}?key=${apiKey}`;
-    console.log(`Plant API Service: Fetching details from Perenual URL: ${url.replace(apiKey, '[REDACTED_API_KEY]')}`);
+    console.log(`Plant API Service: Attempting to fetch details from Perenual. Key: "${apiKey.substring(0,5)}...". URL: ${url.replace(apiKey, '[REDACTED_API_KEY]')}`);
 
     const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
@@ -223,20 +223,4 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     throw new Error('An unexpected error occurred while fetching plant details. Check server logs.');
   }
 }
-
-// Commented out as it's not currently used and was causing build issues with static export previously.
-// If generateStaticParams is needed for /plants/[id], this function needs to be adapted to a real endpoint.
-// export async function fetchAllPlantIDs(): Promise<{ id: string }[]> {
-//   // This is a placeholder. Replace with actual API call to fetch all plant IDs if needed.
-//   // For example, if your API had an endpoint like /api/all-plant-ids
-//   // const response = await fetch('https://your-backend.com/api/plants/ids');
-//   // if (!response.ok) {
-//   //   throw new Error('Failed to fetch plant IDs');
-//   // }
-//   // const data = await response.json(); // Assuming it returns { ids: [1, 2, 3,...] }
-//   // return data.ids.map((id: number) => ({ id: String(id) }));
-//   console.warn("fetchAllPlantIDs is a placeholder and not fetching real data.");
-//   return []; // Return empty for now to prevent build errors if generateStaticParams were to use it directly
-// }
-
     
