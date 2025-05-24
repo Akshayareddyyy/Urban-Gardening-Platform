@@ -167,6 +167,14 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     }
     const result = await response.json() as PerenualPlantListResponse;
     console.log(`Plant API Service: Received ${result.data?.length || 0} items from Perenual for query "${query}".`);
+    // Log the first few items of the raw data to inspect available fields
+    if (result.data && result.data.length > 0) {
+      console.log('Plant API Service: RAW Perenual API Search Result Data (first 1-2 items):', JSON.stringify(result.data.slice(0, 2), null, 2));
+    } else if (result.data) {
+      console.log('Plant API Service: Perenual API Search Result Data is empty.');
+    } else {
+      console.log('Plant API Service: Perenual API Search Result Data is undefined.');
+    }
     return result.data ? result.data.map(mapToPlantSummary) : [];
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
@@ -215,3 +223,20 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     throw new Error('An unexpected error occurred while fetching plant details. Check server logs.');
   }
 }
+
+// Commented out as it's not currently used and was causing build issues with static export previously.
+// If generateStaticParams is needed for /plants/[id], this function needs to be adapted to a real endpoint.
+// export async function fetchAllPlantIDs(): Promise<{ id: string }[]> {
+//   // This is a placeholder. Replace with actual API call to fetch all plant IDs if needed.
+//   // For example, if your API had an endpoint like /api/all-plant-ids
+//   // const response = await fetch('https://your-backend.com/api/plants/ids');
+//   // if (!response.ok) {
+//   //   throw new Error('Failed to fetch plant IDs');
+//   // }
+//   // const data = await response.json(); // Assuming it returns { ids: [1, 2, 3,...] }
+//   // return data.ids.map((id: number) => ({ id: String(id) }));
+//   console.warn("fetchAllPlantIDs is a placeholder and not fetching real data.");
+//   return []; // Return empty for now to prevent build errors if generateStaticParams were to use it directly
+// }
+
+    
