@@ -145,7 +145,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
   
   console.log(`Plant API Service: searchPlants called for query "${query}". API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   if (!apiKey) {
-    const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
+    const errorMsg = 'CRITICAL: Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
     console.error("CRITICAL: searchPlants - " + errorMsg);
     throw new MissingApiKeyError(errorMsg);
   }
@@ -180,18 +180,19 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
         throw error;
     }
     // Enhanced error logging for the server terminal
-    let detailedLogMessage = 'SERVER_LOG: Error during Perenual API call or JSON parsing in searchPlants:';
+    console.error("SERVER_LOG: Raw error object during Perenual API call in searchPlants:", error); // Log raw error
+    let detailedLogMessage = 'SERVER_LOG: Error details during Perenual API call or JSON parsing in searchPlants:';
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
       if (error.stack) {
-        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log part of the stack
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`;
       }
     } else {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
     }
     console.error(detailedLogMessage);
     // This more instructive message is what the client-side will receive
-    throw new Error('Search failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
+    throw new Error('Search failed due to an internal issue. The detailed error has been logged on the server. PLEASE CHECK YOUR SERVER TERMINAL LOGS for the exact cause.');
   }
 }
 
@@ -201,7 +202,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
   console.log(`Plant API Service: getPlantDetails called for ID ${plantId}. API Key available at module load: ${PERENUAL_API_KEY_FROM_ENV ? 'Yes' : 'NO (undefined)'}`);
   try {
     if (!apiKey) {
-      const errorMsg = 'Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Plant details cannot be fetched. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
+      const errorMsg = 'CRITICAL: Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is not configured or was not loaded correctly. Plant details cannot be fetched. Ensure it is set in your .env file (root of project) and that you have FULLY RESTARTED your Next.js development server after the change. Perenual API cannot be called.';
       console.error("CRITICAL: getPlantDetails - " + errorMsg);
       throw new MissingApiKeyError(errorMsg);
     }
@@ -230,18 +231,19 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
         throw error; 
     }
     // Enhanced error logging for the server terminal
-    let detailedLogMessage = `SERVER_LOG: Unexpected error in getPlantDetails for ID ${plantId} using Perenual API:`;
+    console.error(`SERVER_LOG: Raw error object during Perenual API call in getPlantDetails for ID ${plantId}:`, error); // Log raw error
+    let detailedLogMessage = `SERVER_LOG: Error details during Perenual API call or JSON parsing in getPlantDetails for ID ${plantId}:`;
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
       if (error.stack) {
-        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log part of the stack
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; 
       }
     } else {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
     }
     console.error(detailedLogMessage);
     // This more instructive message is what the client-side will receive
-    throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. Please check server terminal logs.');
+    throw new Error('Fetching plant details failed due to an internal issue. The detailed error has been logged on the server. PLEASE CHECK YOUR SERVER TERMINAL LOGS for the exact cause.');
   }
 }
     
