@@ -11,23 +11,21 @@ interface PlantDetailDisplayProps {
 }
 
 const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: string | string[] | null | number | boolean; children?: React.ReactNode }> = ({ icon: Icon, label, value, children }) => {
-  let displayValue: string;
+  let displayValue: string | React.ReactNode = 'N/A';
 
   if (children) {
-    // If children are provided, they handle rendering the value.
-    displayValue = ''; 
-  } else if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
-    displayValue = 'N/A';
-  } else if (typeof value === 'boolean') {
-    displayValue = value ? 'Yes' : 'No';
-  } else if (Array.isArray(value)) {
-    // Filter out empty or "N/A" strings from array before joining
-    const filteredArray = value.map(s => String(s).trim()).filter(s => s && s.toLowerCase() !== 'n/a' && s !== '');
-    displayValue = filteredArray.length > 0 ? filteredArray.join(', ') : 'N/A';
-  } else if (typeof value === 'string' && value.toLowerCase() === 'n/a') {
-    displayValue = 'N/A';
-  } else {
-    displayValue = String(value);
+    displayValue = children;
+  } else if (value !== null && value !== undefined) {
+    if (Array.isArray(value)) {
+      const filteredArray = value.map(s => String(s).trim()).filter(s => s && s.toLowerCase() !== 'n/a' && s !== '');
+      if (filteredArray.length > 0) {
+        displayValue = filteredArray.join(', ');
+      }
+    } else if (typeof value === 'boolean') {
+      displayValue = value ? 'Yes' : 'No';
+    } else if (String(value).trim() !== '' && String(value).toLowerCase() !== 'n/a') {
+      displayValue = String(value);
+    }
   }
 
   return (
@@ -35,10 +33,10 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
       <Icon className="h-6 w-6 text-accent mt-1 shrink-0" />
       <div>
         <h3 className="text-md font-semibold text-foreground">{label}</h3>
-        {children ? (
-          children
-        ) : (
+        {typeof displayValue === 'string' ? (
           <p className="text-muted-foreground text-sm whitespace-pre-wrap">{displayValue}</p>
+        ) : (
+          displayValue
         )}
       </div>
     </div>
