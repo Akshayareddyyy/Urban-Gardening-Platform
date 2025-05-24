@@ -10,7 +10,7 @@ import { searchPlants } from '@/lib/plant-api-service';
 import { MissingApiKeyError } from '@/lib/errors';
 import { Loader2, SearchIcon, HelpCircle, Leaf, AlertTriangle, KeyRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardFooter } from '@/components/ui/card'; // Ensured Card is imported
+import { Card, CardContent, CardFooter } from '@/components/ui/card'; 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function PlantSearch() {

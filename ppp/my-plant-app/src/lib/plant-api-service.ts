@@ -180,7 +180,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
         throw error;
     }
     // Enhanced error logging for the server terminal
-    console.error("SERVER_LOG: Raw error object during Perenual API call in searchPlants:", error); // Log raw error
+    console.error("SERVER_LOG: Raw error object during Perenual API call in searchPlants:", error); 
     let detailedLogMessage = 'SERVER_LOG: Error details during Perenual API call or JSON parsing in searchPlants:';
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
@@ -231,7 +231,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
         throw error; 
     }
     // Enhanced error logging for the server terminal
-    console.error(`SERVER_LOG: Raw error object during Perenual API call in getPlantDetails for ID ${plantId}:`, error); // Log raw error
+    console.error(`SERVER_LOG: Raw error object during Perenual API call in getPlantDetails for ID ${plantId}:`, error); 
     let detailedLogMessage = `SERVER_LOG: Error details during Perenual API call or JSON parsing in getPlantDetails for ID ${plantId}:`;
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
