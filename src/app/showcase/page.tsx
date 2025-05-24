@@ -73,8 +73,8 @@ export default function ShowcasePage() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12">
-          {/* Left Column: Form */}
-          <aside className="lg:w-1/3 lg:sticky lg:top-24 self-start h-fit space-y-6"> {/* Added self-start for sticky behavior */}
+          {/* Left Column: Form - Takes 1/3 width on large screens */}
+          <aside className="lg:w-1/3 lg:sticky lg:top-24 self-start h-fit space-y-6">
             <div className="p-6 bg-card rounded-lg shadow-lg border">
               <h2 className="text-2xl font-semibold text-primary mb-1 flex items-center">
                 <Leaf className="h-6 w-6 mr-2 text-accent" />
@@ -91,7 +91,7 @@ export default function ShowcasePage() {
             </div>
           </aside>
 
-          {/* Right Column: List */}
+          {/* Right Column: List - Takes 2/3 width on large screens */}
           <main className="lg:w-2/3">
             <h2 className="text-3xl font-semibold text-primary mb-10 text-center lg:text-left">
               Our Community's Green Gallery
