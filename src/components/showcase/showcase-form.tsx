@@ -23,9 +23,9 @@ import Image from 'next/image';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
 
+// userName removed from schema
 const showcaseFormSchema = z.object({
   plantName: z.string().min(2, { message: "Plant name must be at least 2 characters." }).max(50, { message: "Plant name cannot exceed 50 characters." }),
-  userName: z.string().min(2, { message: "Your name must be at least 2 characters." }).max(50, { message: "Your name cannot exceed 50 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(500, { message: "Description cannot exceed 500 characters." }),
   image: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, "An image of your plant is required.")
@@ -36,20 +36,20 @@ const showcaseFormSchema = z.object({
     ),
 });
 
-export type ShowcaseFormValues = z.infer<typeof showcaseFormSchema>;
+// userName removed from ShowcaseFormValues
+export type ShowcaseFormValues = Omit<z.infer<typeof showcaseFormSchema>, 'userName'>;
 
 type ShowcaseFormProps = {
+  // onSubmit no longer expects userName in its data argument
   onSubmit: (data: ShowcaseFormValues, imageFile: File) => Promise<void>;
   isLoading: boolean;
 };
 
-// Wrap component with forwardRef to accept a ref
 export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProps>(({ onSubmit, isLoading }, ref) => {
-  const form = useForm<ShowcaseFormValues>({
+  const form = useForm<z.infer<typeof showcaseFormSchema>>({ // Use inferred schema type directly
     resolver: zodResolver(showcaseFormSchema),
     defaultValues: {
       plantName: '',
-      userName: '',
       description: '',
       image: undefined,
     },
@@ -75,20 +75,18 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
     }
   };
 
-  const handleSubmit = async (values: ShowcaseFormValues) => {
+  const handleSubmit = async (values: z.infer<typeof showcaseFormSchema>) => { // Use inferred schema type
     const imageFile = values.image[0];
-    await onSubmit(values, imageFile);
-    // Parent will call reset via ref if submission is successful
+    // Pass values (which no longer include userName) to onSubmit
+    await onSubmit(values as ShowcaseFormValues, imageFile); 
   };
   
-  // Expose a reset method via ref
   useImperativeHandle(ref, () => ({
     reset: () => {
       form.reset();
       setImagePreview(null);
     }
   }));
-
 
   return (
     <Form {...form}>
@@ -107,20 +105,7 @@ export const ShowcaseForm = forwardRef<({ reset: () => void }), ShowcaseFormProp
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="userName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-semibold text-primary">Your Name</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., PlantLover23" {...field} className="text-base"/>
-              </FormControl>
-              <FormDescription>How should we credit you?</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* userName FormField removed */}
         <FormField
           control={form.control}
           name="description"
