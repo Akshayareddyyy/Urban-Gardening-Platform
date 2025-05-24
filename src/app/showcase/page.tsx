@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ShowcaseForm, type ShowcaseFormValues } from '@/components/showcase/showcase-form';
 import { ShowcaseList } from '@/components/showcase/showcase-list';
 import type { ShowcasePost } from '@/types/showcase';
@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid'; 
 import { Users, Leaf } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useAuth } from '@/context/AuthContext'; // Import useAuth
+import { useAuth } from '@/context/AuthContext'; 
 
 const initialPosts: ShowcasePost[] = [
   // Initial posts are removed, showcase starts empty
@@ -20,7 +20,7 @@ export default function ShowcasePage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const formRef = useRef<{ reset: () => void }>(null);
-  const { user } = useAuth(); // Get authenticated user
+  const { user } = useAuth(); 
 
   const handleAddShowcasePost = async (data: ShowcaseFormValues, imageFile: File) => {
     setIsLoading(true);
@@ -35,8 +35,9 @@ export default function ShowcasePage() {
       return;
     }
 
-    // Determine userName from authenticated user
+    // Determine userName from authenticated user, prioritizing displayName
     const userName = user.displayName || user.email || 'Anonymous Gardener';
+    const userAvatar = user.photoURL || `https://placehold.co/64x64.png?text=${userName.substring(0,2).toUpperCase()}`;
 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000)); 
@@ -46,8 +47,8 @@ export default function ShowcasePage() {
       const newPost: ShowcasePost = {
         id: uuidv4(),
         plantName: data.plantName,
-        userName: userName, // Use authenticated user's name
-        userAvatarUrl: user.photoURL || `https://placehold.co/64x64.png?text=${userName.substring(0,2).toUpperCase()}`, 
+        userName: userName, 
+        userAvatarUrl: userAvatar, 
         description: data.description,
         imagePreviewUrl: reader.result as string, 
         submittedAt: new Date(),
