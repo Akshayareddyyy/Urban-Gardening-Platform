@@ -1,7 +1,7 @@
 
 'use client';
 
-import * as React from 'react'; // Ensure React is imported
+import { useEffect } from 'react'; // Changed to directly import useEffect
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -40,7 +40,7 @@ export function CultivationGuideForm({ onSubmit, isLoading, initialPlantName }: 
   });
 
   // Update default value if initialPlantName changes
-  React.useEffect(() => {
+  useEffect(() => { // Now using useEffect directly
     if (initialPlantName) {
       form.reset({ plantName: initialPlantName });
     }
