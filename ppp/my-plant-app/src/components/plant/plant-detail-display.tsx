@@ -11,7 +11,7 @@ interface PlantDetailDisplayProps {
 }
 
 const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: string | string[] | null | number | boolean; children?: React.ReactNode }> = ({ icon: Icon, label, value, children }) => {
-  let displayValue: string | React.ReactNode = 'N/A';
+  let displayValue: string | React.ReactNode = 'N/A'; // Default to 'N/A'
 
   if (children) {
     displayValue = children;
@@ -20,13 +20,13 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
       const filteredArray = value.map(s => String(s).trim()).filter(s => s && s.toLowerCase() !== 'n/a' && s !== '');
       if (filteredArray.length > 0) {
         displayValue = filteredArray.join(', ');
-      }
+      } // If filteredArray is empty, displayValue remains 'N/A'
     } else if (typeof value === 'boolean') {
       displayValue = value ? 'Yes' : 'No';
-    } else if (String(value).trim() !== '' && String(value).toLowerCase() !== 'n/a') {
+    } else if (String(value).trim() !== '' && String(value).toLowerCase() !== 'n/a') { // Check if string value is meaningful
       displayValue = String(value);
-    }
-  }
+    } // If string value is empty or "n/a", displayValue remains 'N/A'
+  } // If value is null or undefined, displayValue remains 'N/A'
 
   return (
     <div className="flex items-start space-x-3">
@@ -36,7 +36,7 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
         {typeof displayValue === 'string' ? (
           <p className="text-muted-foreground text-sm whitespace-pre-wrap">{displayValue}</p>
         ) : (
-          displayValue
+          displayValue // For when children are used
         )}
       </div>
     </div>
