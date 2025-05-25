@@ -6,18 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
-import { searchPlants } from '@/lib/plant-api-service';
+import { searchPlants } from '@/lib/plant-api-service'; 
 import { MissingApiKeyError } from '@/lib/errors';
 import { Loader2, SearchIcon, HelpCircle, Leaf, AlertTriangle, KeyRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardFooter } from '@/components/ui/card'; 
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function PlantSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<PlantSummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+  const [searched, setSearched] = useState(false); 
   const [searchError, setSearchError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -25,7 +25,7 @@ export function PlantSearch() {
     setIsLoading(true);
     setSearched(true);
     setSearchError(null);
-    setResults([]);
+    setResults([]); 
 
     try {
       // This function call uses the Perenual API via src/lib/plant-api-service.ts
@@ -33,13 +33,19 @@ export function PlantSearch() {
       setResults(data);
     } catch (error: any) {
       console.error('PlantSearch: Client-side caught error during searchPlants call:', error); // Log the full error object
-      let displayErrorMessage = 'An unexpected error occurred while searching. Please try again.';
+      let displayErrorMessage = 'An unexpected error occurred while searching. Please try again. IMPORTANT: Check your Next.js server terminal logs for more specific error details from the backend.';
+      
       if (error instanceof MissingApiKeyError) {
         // This specific error should now be caught by the specific check below
-        displayErrorMessage = error.message;
+        displayErrorMessage = `Critical Configuration Error: The Perenual API key (NEXT_PUBLIC_PERENUAL_API_KEY) is missing or not accessible by the server.\n
+        Please ensure ALL of the following are true:\n
+        1. You have a file named exactly '.env' in the ROOT of your 'my-plant-app' project folder.\n
+        2. This '.env' file contains the line: NEXT_PUBLIC_PERENUAL_API_KEY=your_actual_api_key\n
+        3. You have completely STOPPED and RESTARTED your Next.js development server (e.g., npm run dev) after creating or modifying the .env file.\n
+        Your Next.js server terminal logs should indicate if the key was loaded at startup. Current error message: ${error.message}`;
       } else if (error instanceof Error) {
         // This will catch the instructive error message re-thrown by plant-api-service.ts
-        displayErrorMessage = error.message;
+        displayErrorMessage = error.message; // This message should already prompt to check server logs.
       }
       console.log('PlantSearch: Setting searchError state to:', displayErrorMessage); // Log what message is being set
       setSearchError(displayErrorMessage);
@@ -53,14 +59,14 @@ export function PlantSearch() {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
   };
-
+  
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     startTransition(() => {
       performSearch(searchTerm);
     });
   };
-
+  
   return (
     <div className="space-y-8">
       <form onSubmit={onSearchSubmit} className="flex w-full max-w-2xl mx-auto items-center space-x-3 bg-card p-3 rounded-lg shadow-md border">
@@ -109,7 +115,7 @@ export function PlantSearch() {
           <HelpCircle className="mx-auto h-16 w-16 mb-4 text-accent opacity-70" />
           <h2 className="text-2xl font-semibold text-foreground mb-2">No Green Matches Found</h2>
           <p className="max-w-md mx-auto">
-            {searchTerm.trim() === ''
+            {searchTerm.trim() === '' 
               ? "Please enter a search term to find plants."
               : `We couldn't find any plants matching "${searchTerm}". Try checking your spelling or using more general terms.`}
           </p>
@@ -123,12 +129,12 @@ export function PlantSearch() {
             <PlantCard key={plant.id} plant={plant} />
           ))}
         </div>
-      ) : !searched && !isLoading ? (
+      ) : !searched && !isLoading ? ( 
          <div className="text-center py-16 text-muted-foreground bg-gradient-to-b from-background to-secondary/30 rounded-xl border border-dashed">
            <Leaf className="mx-auto h-16 w-16 mb-6 text-primary opacity-60" />
            <h2 className="text-3xl font-semibold text-foreground mb-3">Ready to Find Your Plant?</h2>
            <p className="max-w-lg mx-auto text-lg">
-             Type a plant name, characteristic, or type into the search bar above.
+             Type a plant name, characteristic, or type into the search bar above. 
              Let's unearth the perfect plant for your urban garden!
            </p>
          </div>
@@ -136,3 +142,4 @@ export function PlantSearch() {
     </div>
   );
 }
+

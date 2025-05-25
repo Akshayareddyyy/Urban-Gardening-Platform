@@ -177,7 +177,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     return result.data ? result.data.map(mapToPlantSummary) : [];
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
-        throw error;
+        throw error; // Re-throw if it's specifically a missing key error
     }
     // Enhanced error logging for the server terminal
     console.error("SERVER_LOG: Raw error object during Perenual API call in searchPlants:", error); 
@@ -185,7 +185,7 @@ export async function searchPlants(query: string): Promise<PlantSummary[]> {
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
       if (error.stack) {
-        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`;
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log first 500 chars of stack
       }
     } else {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
@@ -228,7 +228,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     return mapToPlantDetail(result);
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
-        throw error; 
+        throw error; // Re-throw if it's specifically a missing key error
     }
     // Enhanced error logging for the server terminal
     console.error(`SERVER_LOG: Raw error object during Perenual API call in getPlantDetails for ID ${plantId}:`, error); 
@@ -236,7 +236,7 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
     if (error instanceof Error) {
       detailedLogMessage += `\n  Error Name: ${error.name}\n  Error Message: ${error.message}`;
       if (error.stack) {
-        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; 
+        detailedLogMessage += `\n  Error Stack: ${error.stack.substring(0, 500)}...`; // Log first 500 chars of stack
       }
     } else {
       detailedLogMessage += `\n  Caught non-Error object: ${String(error)}`;
