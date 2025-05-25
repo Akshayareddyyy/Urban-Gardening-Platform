@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlantCard } from '@/components/plant/plant-card';
 import type { PlantSummary } from '@/types/plant';
-import { searchPlants } from '@/lib/plant-api-service'; 
+import { searchPlants } from '@/lib/plant-api-service';
 import { MissingApiKeyError } from '@/lib/errors';
 import { Loader2, SearchIcon, HelpCircle, Leaf, AlertTriangle, KeyRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,7 +17,7 @@ export function PlantSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<PlantSummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searched, setSearched] = useState(false); 
+  const [searched, setSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -25,7 +25,7 @@ export function PlantSearch() {
     setIsLoading(true);
     setSearched(true);
     setSearchError(null);
-    setResults([]); 
+    setResults([]);
 
     try {
       // This function call uses the Perenual API via src/lib/plant-api-service.ts
@@ -143,3 +143,4 @@ export function PlantSearch() {
   );
 }
 
+    
