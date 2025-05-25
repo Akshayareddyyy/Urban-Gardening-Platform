@@ -1,7 +1,7 @@
 
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react'; // Import useEffect directly
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import {
   FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, BookOpen } from 'lucide-react';
 import type { GetCultivationGuideInput } from '@/ai/flows/get-cultivation-guide-flow';
 
@@ -39,7 +40,7 @@ export function CultivationGuideForm({ onSubmit, isLoading, initialPlantName }: 
   });
 
   // Update default value if initialPlantName changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialPlantName) {
       form.reset({ plantName: initialPlantName });
     }

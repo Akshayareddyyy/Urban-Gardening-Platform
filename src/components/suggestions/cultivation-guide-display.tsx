@@ -2,7 +2,7 @@
 'use client';
 
 import type { GetCultivationGuideOutput } from '@/ai/flows/get-cultivation-guide-flow';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { CheckCircle2, AlertTriangle, BookText, Sun, Droplets, Wind, Clock, Sprout, Info } from 'lucide-react';
 
