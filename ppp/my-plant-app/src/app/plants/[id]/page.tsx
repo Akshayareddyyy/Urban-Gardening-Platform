@@ -54,67 +54,71 @@ export async function generateMetadata(
 
 
 export default async function PlantDetailPage({ params }: PlantDetailPageProps) {
-  const plantIdStr = await params.id; // Await access to the id property
-
-  if (!plantIdStr) {
-    return (
-      <div className="text-center py-10">
-        <Alert variant="destructive" className="max-w-md mx-auto">
-           <ServerCrash className="h-5 w-5" />
-          <AlertTitle>Error: Invalid Request</AlertTitle>
-          <AlertDescription>No plant identifier was provided.</AlertDescription>
-        </Alert>
-        <Button asChild variant="link" className="mt-4">
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
-          </Link>
-        </Button>
-      </div>
-    );
-  }
-
-  const plantId = parseInt(plantIdStr, 10);
-
-  if (isNaN(plantId)) {
-     return (
-      <div className="text-center py-10">
-        <Alert variant="destructive" className="max-w-md mx-auto">
-           <HelpCircle className="h-5 w-5" />
-          <AlertTitle>Error: Invalid Plant ID</AlertTitle>
-          <AlertDescription>The plant ID "{plantIdStr}" is not a valid format.</AlertDescription>
-        </Alert>
-        <Button asChild variant="link" className="mt-4">
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
-          </Link>
-        </Button>
-      </div>
-    );
-  }
-
   let plant = null;
   let fetchError = null;
+  let plantIdStrParam: string | undefined;
+
   try {
+    plantIdStrParam = await params.id; // Await access to the id property
+
+    if (!plantIdStrParam) {
+      return (
+        <div className="text-center py-10">
+          <Alert variant="destructive" className="max-w-md mx-auto">
+            <ServerCrash className="h-5 w-5" />
+            <AlertTitle>Error: Invalid Request</AlertTitle>
+            <AlertDescription>No plant identifier was provided.</AlertDescription>
+          </Alert>
+          <Button asChild variant="link" className="mt-4">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
+            </Link>
+          </Button>
+        </div>
+      );
+    }
+
+    const plantId = parseInt(plantIdStrParam, 10);
+
+    if (isNaN(plantId)) {
+      return (
+        <div className="text-center py-10">
+          <Alert variant="destructive" className="max-w-md mx-auto">
+            <HelpCircle className="h-5 w-5" />
+            <AlertTitle>Error: Invalid Plant ID</AlertTitle>
+            <AlertDescription>The plant ID "{plantIdStrParam}" is not a valid format.</AlertDescription>
+          </Alert>
+          <Button asChild variant="link" className="mt-4">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
+            </Link>
+          </Button>
+        </div>
+      );
+    }
+
     plant = await getPlantDetails(plantId);
+    console.log(`PlantDetailPage: Fetched plant data for ID ${plantId}:`, JSON.stringify(plant, null, 2)); // ADDED THIS LOG
+
   } catch (error: any) {
-    console.error(`SERVER_LOG: Error fetching plant details in PlantDetailPage for ID ${plantIdStr}:`, error);
+    console.error(`SERVER_LOG: Error fetching plant details in PlantDetailPage for ID ${plantIdStrParam || 'unknown'}:`, error);
     fetchError = error.message || "An unknown error occurred during data fetching.";
     // Log more detailed error for server debugging
-    let detailedLogMessage = `SERVER_LOG: Detailed error object for plant ID ${plantIdStr}:\n`;
+    let detailedLogMessage = `SERVER_LOG: Detailed error object for plant ID ${plantIdStrParam || 'unknown'}:\n`;
     if (error.name) detailedLogMessage += `  Name: ${error.name}\n`;
     if (error.message) detailedLogMessage += `  Message: ${error.message}\n`;
     if (error.stack) detailedLogMessage += `  Stack: ${error.stack.substring(0, 500)}...\n`;
     console.error(detailedLogMessage);
   }
 
-  if (!plant) {
+  if (fetchError || !plant) {
     return (
       <div className="text-center py-10">
         <Alert variant="destructive" className="max-w-lg mx-auto">
           <ServerCrash className="h-5 w-5" />
           <AlertTitle>Plant Not Found or Error Loading Details</AlertTitle>
           <AlertDescription>
-            Sorry, we couldn't find or load details for the plant ID "{plantIdStr}". 
+            Sorry, we couldn't find or load details for plant ID "{plantIdStrParam || params.id}". 
             It might be a rare species, not in our database, or there was an issue fetching its information.
             Please ensure your Perenual API key is correctly configured if this issue persists.
             {fetchError && <p className="mt-2">Details: {fetchError}. Check server logs for more information.</p>}
