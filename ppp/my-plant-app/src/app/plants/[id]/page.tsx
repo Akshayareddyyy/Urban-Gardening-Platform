@@ -60,8 +60,11 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
 
   try {
     plantIdStrParam = await params.id; // Await access to the id property
+    console.log(`PlantDetailPage: Received plant ID from params: ${plantIdStrParam}`);
+
 
     if (!plantIdStrParam) {
+      console.error("PlantDetailPage: No plant ID provided in params.");
       return (
         <div className="text-center py-10">
           <Alert variant="destructive" className="max-w-md mx-auto">
@@ -81,6 +84,7 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
     const plantId = parseInt(plantIdStrParam, 10);
 
     if (isNaN(plantId)) {
+      console.error(`PlantDetailPage: Invalid plant ID format: "${plantIdStrParam}"`);
       return (
         <div className="text-center py-10">
           <Alert variant="destructive" className="max-w-md mx-auto">
@@ -98,7 +102,7 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
     }
 
     plant = await getPlantDetails(plantId);
-    console.log(`PlantDetailPage: Fetched plant data for ID ${plantId}:`, JSON.stringify(plant, null, 2)); // ADDED THIS LOG
+    console.log(`PlantDetailPage: Fetched plant data for ID ${plantId}:`, JSON.stringify(plant, null, 2)); 
 
   } catch (error: any) {
     console.error(`SERVER_LOG: Error fetching plant details in PlantDetailPage for ID ${plantIdStrParam || 'unknown'}:`, error);
@@ -112,6 +116,7 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
   }
 
   if (fetchError || !plant) {
+     console.warn(`PlantDetailPage: Rendering error/not found for ID "${plantIdStrParam || params.id}". Fetch error: ${fetchError}, Plant data: ${plant}`);
     return (
       <div className="text-center py-10">
         <Alert variant="destructive" className="max-w-lg mx-auto">

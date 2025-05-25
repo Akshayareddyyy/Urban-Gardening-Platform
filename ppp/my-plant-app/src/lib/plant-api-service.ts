@@ -9,7 +9,7 @@ console.log(
 );
 
 import type { Plant, PlantSummary } from '@/types/plant';
-import { MissingApiKeyError } from '@/lib/errors'; 
+import { MissingApiKeyError } from '@/lib/errors';
 
 const PERENUAL_API_URL = 'https://perenual.com/api';
 
@@ -222,10 +222,14 @@ export async function getPlantDetails(plantId: number): Promise<Plant | null> {
       console.error("Plant API Service: getPlantDetails - " + errorMsg);
       throw new Error(`Perenual API request for details failed with status ${response.status}. Ensure your API key is valid and has not exceeded its quota. Response body: ${errorBody.substring(0, 200)}`);
     }
-    const result = await response.json() as PerenualPlantDetailResponse;
-    console.log(`Plant API Service: RAW Perenual API Response for plant ID ${plantId}:`, JSON.stringify(result, null, 2));
-    console.log(`Plant API Service: Successfully fetched details for plant ID ${plantId}.`);
-    return mapToPlantDetail(result);
+    const resultJson = await response.json(); // Get the JSON first
+    console.log(`Plant API Service: RAW Perenual API Response for plant ID ${plantId}:`, JSON.stringify(resultJson, null, 2));
+    
+    const mappedPlant = mapToPlantDetail(resultJson as PerenualPlantDetailResponse);
+    console.log(`Plant API Service: MAPPED plant object for ID ${plantId}:`, JSON.stringify(mappedPlant, null, 2));
+    
+    console.log(`Plant API Service: Successfully fetched and mapped details for plant ID ${plantId}.`);
+    return mappedPlant;
   } catch (error) {
     if (error instanceof MissingApiKeyError) {
         throw error; // Re-throw if it's specifically a missing key error
