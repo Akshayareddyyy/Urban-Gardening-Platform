@@ -5,7 +5,7 @@ import type { Plant, PlantSummary } from '@/types/plant';
 import { MissingApiKeyError } from '@/lib/errors'; // Import from the new location
 
 const PERENUAL_API_KEY = process.env.NEXT_PUBLIC_PERENUAL_API_KEY;
-const PERENUAL_API_URL = 'https://perenual.com/api';
+const PERENUAL_API_URL = 'https://perenual.com/api/v2';
 
 interface PerenualPlantListItem {
   id: number;
