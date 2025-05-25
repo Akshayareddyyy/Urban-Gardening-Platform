@@ -20,13 +20,13 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
       const filteredArray = value.map(s => String(s).trim()).filter(s => s && s.toLowerCase() !== 'n/a' && s !== '');
       if (filteredArray.length > 0) {
         displayValue = filteredArray.join(', ');
-      } // If filteredArray is empty, displayValue remains 'N/A'
+      }
     } else if (typeof value === 'boolean') {
       displayValue = value ? 'Yes' : 'No';
-    } else if (String(value).trim() !== '' && String(value).toLowerCase() !== 'n/a') { // Check if string value is meaningful
+    } else if (String(value).trim() !== '' && String(value).toLowerCase() !== 'n/a') {
       displayValue = String(value);
-    } // If string value is empty or "n/a", displayValue remains 'N/A'
-  } // If value is null or undefined, displayValue remains 'N/A'
+    }
+  }
 
   return (
     <div className="flex items-start space-x-3">
@@ -36,7 +36,7 @@ const DetailItem: React.FC<{ icon: React.ElementType; label: string; value?: str
         {typeof displayValue === 'string' ? (
           <p className="text-muted-foreground text-sm whitespace-pre-wrap">{displayValue}</p>
         ) : (
-          displayValue // For when children are used
+          displayValue 
         )}
       </div>
     </div>
@@ -50,7 +50,16 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
   const imageUrl = plant.default_image?.medium_url || plant.default_image?.regular_url || plant.default_image?.original_url;
 
   const hasMeaningfulDescription = plant.description && plant.description.trim() !== '' && plant.description.toLowerCase() !== 'n/a';
-  const hasMeaningfulOtherNames = plant.other_name && plant.other_name.length > 0 && plant.other_name.some(name => name.trim() !== '' && name.toLowerCase() !== 'n/a');
+  
+  // Filter out empty or "n/a" scientific names
+  const validScientificNames = Array.isArray(plant.scientific_name) 
+    ? plant.scientific_name.map(name => String(name).trim()).filter(name => name && name.toLowerCase() !== 'n/a') 
+    : [];
+  
+  // Filter out empty or "n/a" other names
+  const validOtherNames = Array.isArray(plant.other_name)
+    ? plant.other_name.map(name => String(name).trim()).filter(name => name && name.toLowerCase() !== 'n/a')
+    : [];
 
   return (
     <Card className="overflow-hidden shadow-xl">
@@ -74,15 +83,17 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
         </div>
         <div className="absolute bottom-0 left-0 p-6 md:p-8">
             <CardTitle className="text-3xl md:text-4xl font-bold text-primary-foreground drop-shadow-md">{plant.common_name}</CardTitle>
-            {(plant.scientific_name && plant.scientific_name.length > 0 && plant.scientific_name.some(name => String(name).trim().toLowerCase() !== 'n/a' && String(name).trim() !== '')) ? (
+            {validScientificNames.length > 0 ? (
               <CardDescription className="text-lg text-primary-foreground/90 italic mt-1 drop-shadow-sm">
-                {plant.scientific_name.filter(name => String(name).trim().toLowerCase() !== 'n/a' && String(name).trim() !== '').join(', ')}
+                {validScientificNames.join(', ')}
               </CardDescription>
             ) : null}
         </div>
       </CardHeader>
       <CardContent className="p-6 md:p-8 space-y-6">
+        
         <DetailItem icon={Info} label="Description" value={plant.description} />
+        
         {hasMeaningfulDescription && <Separator />}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -90,27 +101,33 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
           <DetailItem icon={Sun} label="Sunlight" value={plant.sunlight} />
           <DetailItem icon={Droplets} label="Watering" value={plant.watering} />
           
-          {(plant.watering_general_benchmark?.value && plant.watering_general_benchmark.unit && plant.watering_general_benchmark.value.toLowerCase() !== 'n/a') ? (
-            <DetailItem icon={Droplets} label="Watering Benchmark" value={`${plant.watering_general_benchmark.value} ${plant.watering_general_benchmark.unit}`} />
-          ) : (
-            <DetailItem icon={Droplets} label="Watering Benchmark" value="N/A" />
-          )}
+          <DetailItem 
+            icon={Droplets} 
+            label="Watering Benchmark" 
+            value={(plant.watering_general_benchmark?.value && plant.watering_general_benchmark.unit && String(plant.watering_general_benchmark.value).toLowerCase() !== 'n/a') 
+                    ? `${plant.watering_general_benchmark.value} ${plant.watering_general_benchmark.unit}` 
+                    : "N/A"} 
+          />
 
           <DetailItem icon={CalendarDays} label="Cycle" value={plant.cycle} />
           <DetailItem icon={Settings2} label="Care Level" value={plant.care_level} />
           <DetailItem icon={TrendingUp} label="Growth Rate" value={plant.growth_rate} />
           
-          {(plant.hardiness?.min && plant.hardiness?.max && String(plant.hardiness.min).toLowerCase() !== 'n/a') ? ( 
-            <DetailItem icon={Thermometer} label="Hardiness Zones" value={`${plant.hardiness.min} - ${plant.hardiness.max}`} />
-          ) : (
-             <DetailItem icon={Thermometer} label="Hardiness Zones" value="N/A" />
-          )}
+          <DetailItem 
+            icon={Thermometer} 
+            label="Hardiness Zones" 
+            value={(plant.hardiness?.min && plant.hardiness?.max && String(plant.hardiness.min).toLowerCase() !== 'n/a') 
+                    ? `${plant.hardiness.min} - ${plant.hardiness.max}` 
+                    : "N/A"} 
+          />
           
-          {(plant.dimensions?.min_value && plant.dimensions?.max_value && plant.dimensions?.unit) ? (
-             <DetailItem icon={Milestone} label={`Dimensions (${plant.dimensions.type || 'Height'})`} value={`${plant.dimensions.min_value}-${plant.dimensions.max_value} ${plant.dimensions.unit}`} />
-          ) : (
-             <DetailItem icon={Milestone} label={`Dimensions (${plant.dimensions?.type || 'Height'})`} value="N/A" />
-          )}
+          <DetailItem 
+            icon={Milestone} 
+            label={`Dimensions (${plant.dimensions?.type || 'Height'})`} 
+            value={(plant.dimensions?.min_value && plant.dimensions?.max_value && plant.dimensions?.unit) 
+                    ? `${plant.dimensions.min_value}-${plant.dimensions.max_value} ${plant.dimensions.unit}` 
+                    : "N/A"} 
+          />
 
           <DetailItem icon={Scissors} label="Maintenance" value={plant.maintenance} />
           <DetailItem icon={ShieldCheck} label="Drought Tolerant" value={plant.drought_tolerant} />
@@ -119,13 +136,13 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
           <DetailItem icon={Info} label="Indoor Plant" value={plant.indoor} />
         </div>
 
-        {hasMeaningfulOtherNames && (
+        {validOtherNames.length > 0 && (
           <>
             <Separator />
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Other Names</h3>
               <div className="flex flex-wrap gap-2">
-                {plant.other_name!.filter(name => name.trim() !== '' && name.toLowerCase() !== 'n/a').map(name => <Badge key={name} variant="outline">{name}</Badge>)}
+                {validOtherNames.map(name => <Badge key={name} variant="outline">{name}</Badge>)}
               </div>
             </div>
           </>
@@ -134,3 +151,5 @@ export function PlantDetailDisplay({ plant }: PlantDetailDisplayProps) {
     </Card>
   );
 }
+
+    
