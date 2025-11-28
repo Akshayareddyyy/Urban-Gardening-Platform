@@ -1,0 +1,250 @@
+{
+  "plants": [
+    {
+      "id": "tomato-cherry",
+      "name": "Cherry Tomato",
+      "category": "vegetables",
+      "difficulty": "beginner",
+      "growthTime": "65-75 days",
+      "spacing": "18-24 inches",
+      "sunlight": "full sun",
+      "water": "regular",
+      "harvestSeason": "summer",
+      "description": "Perfect for containers and small spaces. Produces abundant small, sweet tomatoes.",
+      "tips": [
+        "Provide support with stakes or cages",
+        "Water consistently to prevent cracking",
+        "Pinch suckers for better fruit production"
+      ],
+      "companion": ["basil", "marigold", "lettuce"],
+      "image": "tomato-cherry.jpg"
+    },
+    {
+      "id": "basil-sweet",
+      "name": "Sweet Basil",
+      "category": "herbs",
+      "difficulty": "beginner",
+      "growthTime": "60-90 days",
+      "spacing": "6-12 inches",
+      "sunlight": "full sun",
+      "water": "moderate",
+      "harvestSeason": "summer",
+      "description": "Classic culinary herb with aromatic leaves. Great for cooking and pest control.",
+      "tips": [
+        "Pinch flowers to encourage leaf growth",
+        "Harvest in the morning for best flavor",
+        "Grows well indoors with adequate light"
+      ],
+      "companion": ["tomato", "pepper", "oregano"],
+      "image": "basil-sweet.jpg"
+    },
+    {
+      "id": "lettuce-buttercrunch",
+      "name": "Buttercrunch Lettuce",
+      "category": "vegetables",
+      "difficulty": "beginner",
+      "growthTime": "45-65 days",
+      "spacing": "6-8 inches",
+      "sunlight": "partial sun",
+      "water": "regular",
+      "harvestSeason": "spring/fall",
+      "description": "Tender, buttery leaves perfect for salads. Tolerates some heat and cold.",
+      "tips": [
+        "Plant in succession for continuous harvest",
+        "Provide afternoon shade in hot weather",
+        "Harvest outer leaves first"
+      ],
+      "companion": ["chives", "radish", "carrot"],
+      "image": "lettuce-buttercrunch.jpg"
+    },
+    {
+      "id": "mint-spearmint",
+      "name": "Spearmint",
+      "category": "herbs",
+      "difficulty": "beginner",
+      "growthTime": "90-120 days",
+      "spacing": "12-18 inches",
+      "sunlight": "partial shade",
+      "water": "high",
+      "harvestSeason": "spring/summer",
+      "description": "Refreshing herb that spreads quickly. Best grown in containers to control growth.",
+      "tips": [
+        "Contain roots to prevent spreading",
+        "Pinch flowers to maintain leaf quality",
+        "Harvest regularly to encourage growth"
+      ],
+      "companion": ["tomato", "cabbage", "peas"],
+      "image": "mint-spearmint.jpg"
+    },
+    {
+      "id": "pepper-bell",
+      "name": "Bell Pepper",
+      "category": "vegetables",
+      "difficulty": "intermediate",
+      "growthTime": "70-80 days",
+      "spacing": "12-18 inches",
+      "sunlight": "full sun",
+      "water": "moderate",
+      "harvestSeason": "summer",
+      "description": "Colorful, sweet peppers that add crunch to dishes. Available in multiple colors.",
+      "tips": [
+        "Provide support for heavy fruit",
+        "Mulch to retain soil moisture",
+        "Harvest when peppers are firm and full-sized"
+      ],
+      "companion": ["basil", "tomato", "onion"],
+      "image": "pepper-bell.jpg"
+    },
+    {
+      "id": "chives",
+      "name": "Chives",
+      "category": "herbs",
+      "difficulty": "beginner",
+      "growthTime": "60-90 days",
+      "spacing": "4-6 inches",
+      "sunlight": "full sun to partial shade",
+      "water": "moderate",
+      "harvestSeason": "spring/summer/fall",
+      "description": "Mild onion-flavored herb that's easy to grow. Purple flowers are edible too.",
+      "tips": [
+        "Cut like grass, leaving 2 inches above soil",
+        "Divide clumps every 2-3 years",
+        "Flowers attract beneficial insects"
+      ],
+      "companion": ["carrot", "tomato", "rose"],
+      "image": "chives.jpg"
+    },
+    {
+      "id": "strawberry-alpine",
+      "name": "Alpine Strawberry",
+      "category": "fruits",
+      "difficulty": "intermediate",
+      "growthTime": "60-90 days",
+      "spacing": "8-12 inches",
+      "sunlight": "partial sun",
+      "water": "regular",
+      "harvestSeason": "spring/summer",
+      "description": "Small, intensely flavored strawberries that don't need much space. Great for containers.",
+      "tips": [
+        "Remove runners for better fruit production",
+        "Provide consistent moisture",
+        "Protect from birds with netting"
+      ],
+      "companion": ["thyme", "borage", "lettuce"],
+      "image": "strawberry-alpine.jpg"
+    },
+    {
+      "id": "marigold-french",
+      "name": "French Marigold",
+      "category": "flowers",
+      "difficulty": "beginner",
+      "growthTime": "45-60 days",
+      "spacing": "6-8 inches",
+      "sunlight": "full sun",
+      "water": "moderate",
+      "harvestSeason": "summer/fall",
+      "description": "Bright orange and yellow flowers that repel pests and attract beneficial insects.",
+      "tips": [
+        "Deadhead spent flowers for continuous blooms",
+        "Plant near vegetables to deter pests",
+        "Tolerates poor soil conditions"
+      ],
+      "companion": ["tomato", "pepper", "eggplant"],
+      "image": "marigold-french.jpg"
+    },
+    {
+      "id": "radish-cherry-belle",
+      "name": "Cherry Belle Radish",
+      "category": "vegetables",
+      "difficulty": "beginner",
+      "growthTime": "20-30 days",
+      "spacing": "1-2 inches",
+      "sunlight": "full sun to partial shade",
+      "water": "regular",
+      "harvestSeason": "spring/fall",
+      "description": "Fast-growing, crisp radishes perfect for beginners. Ready to harvest in just a month.",
+      "tips": [
+        "Thin seedlings to prevent crowding",
+        "Harvest promptly to avoid splitting",
+        "Plant every 2 weeks for continuous harvest"
+      ],
+      "companion": ["lettuce", "carrot", "spinach"],
+      "image": "radish-cherry-belle.jpg"
+    },
+    {
+      "id": "spinach-baby-leaf",
+      "name": "Baby Leaf Spinach",
+      "category": "vegetables",
+      "difficulty": "beginner",
+      "growthTime": "30-45 days",
+      "spacing": "2-4 inches",
+      "sunlight": "partial shade",
+      "water": "regular",
+      "harvestSeason": "spring/fall",
+      "description": "Tender, nutritious leaves perfect for salads. Thrives in cooler weather.",
+      "tips": [
+        "Plant in cool weather for best quality",
+        "Harvest outer leaves first",
+        "Provide shade in hot weather"
+      ],
+      "companion": ["strawberry", "radish", "pea"],
+      "image": "spinach-baby-leaf.jpg"
+    }
+  ],
+  "categories": {
+    "herbs": {
+      "name": "Herbs",
+      "description": "Aromatic plants perfect for cooking and natural pest control",
+      "icon": "🌿",
+      "color": "#4CAF50"
+    },
+    "vegetables": {
+      "name": "Vegetables",
+      "description": "Nutritious edible plants for fresh produce",
+      "icon": "🥬",
+      "color": "#FF9800"
+    },
+    "fruits": {
+      "name": "Fruits",
+      "description": "Sweet and juicy plants for fresh eating",
+      "icon": "🍓",
+      "color": "#E91E63"
+    },
+    "flowers": {
+      "name": "Flowers",
+      "description": "Beautiful blooms that attract pollinators and add color",
+      "icon": "🌸",
+      "color": "#9C27B0"
+    }
+  },
+  "growthStages": [
+    {
+      "stage": "seed",
+      "name": "Seed/Seedling",
+      "description": "Just planted or newly sprouted",
+      "duration": "1-2 weeks",
+      "icon": "🌱"
+    },
+    {
+      "stage": "vegetative",
+      "name": "Vegetative Growth",
+      "description": "Developing leaves and stems",
+      "duration": "3-6 weeks",
+      "icon": "🌿"
+    },
+    {
+      "stage": "flowering",
+      "name": "Flowering",
+      "description": "Producing flowers",
+      "duration": "2-4 weeks",
+      "icon": "🌼"
+    },
+    {
+      "stage": "fruiting",
+      "name": "Fruiting/Harvest",
+      "description": "Ready to harvest or producing fruit",
+      "duration": "ongoing",
+      "icon": "🍅"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "layouts": [
+    {
+      "id": "balcony-small",
+      "name": "Small Balcony Garden",
+      "size": "4x6",
+      "description": "Perfect for apartment balconies with limited space",
+      "plants": [
+        {"plant": "tomato-cherry", "position": {"x": 1, "y": 1}, "container": "large-pot"},
+        {"plant": "basil-sweet", "position": {"x": 3, "y": 1}, "container": "medium-pot"},
+        {"plant": "lettuce-buttercrunch", "position": {"x": 1, "y": 3}, "container": "window-box"},
+        {"plant": "chives", "position": {"x": 3, "y": 3}, "container": "small-pot"}
+      ],
+      "containers": [
+        {"type": "large-pot", "size": "18 inch", "material": "ceramic"},
+        {"type": "medium-pot", "size": "12 inch", "material": "terra-cotta"},
+        {"type": "window-box", "size": "24x8 inch", "material": "plastic"},
+        {"type": "small-pot", "size": "8 inch", "material": "ceramic"}
+      ]
+    },
+    {
+      "id": "windowsill-herbs",
+      "name": "Windowsill Herb Garden",
+      "size": "6x2",
+      "description": "Indoor herb garden for kitchen windowsill",
+      "plants": [
+        {"plant": "basil-sweet", "position": {"x": 1, "y": 1}, "container": "herb-pot"},
+        {"plant": "mint-spearmint", "position": {"x": 3, "y": 1}, "container": "herb-pot"},
+        {"plant": "chives", "position": {"x": 5, "y": 1}, "container": "herb-pot"}
+      ],
+      "containers": [
+        {"type": "herb-pot", "size": "6 inch", "material": "ceramic"}
+      ]
+    }
+  ],
+  "containers": {
+    "small-pot": {
+      "name": "Small Pot",
+      "capacity": "1-2 gallons",
+      "suitableFor": ["herbs", "small vegetables"],
+      "dimensions": "6-8 inches diameter"
+    },
+    "medium-pot": {
+      "name": "Medium Pot",
+      "capacity": "3-5 gallons",
+      "suitableFor": ["medium vegetables", "small fruiting plants"],
+      "dimensions": "10-14 inches diameter"
+    },
+    "large-pot": {
+      "name": "Large Pot",
+      "capacity": "7-15 gallons",
+      "suitableFor": ["tomatoes", "peppers", "large plants"],
+      "dimensions": "16-20 inches diameter"
+    },
+    "window-box": {
+      "name": "Window Box",
+      "capacity": "2-4 gallons",
+      "suitableFor": ["lettuce", "herbs", "shallow-rooted plants"],
+      "dimensions": "24-36 inches long x 6-8 inches deep"
+    },
+    "raised-bed": {
+      "name": "Raised Bed",
+      "capacity": "variable",
+      "suitableFor": ["all plants", "root vegetables"],
+      "dimensions": "4x8 feet or custom"
+    }
+  },
+  "tools": [
+    {
+      "name": "Watering Can",
+      "category": "watering",
+      "essential": true,
+      "description": "For gentle, controlled watering"
+    },
+    {
+      "name": "Hand Trowel",
+      "category": "planting",
+      "essential": true,
+      "description": "For digging small holes and transplanting"
+    },
+    {
+      "name": "Pruning Shears",
+      "category": "maintenance",
+      "essential": true,
+      "description": "For harvesting and pruning plants"
+    },
+    {
+      "name": "Plant Stakes",
+      "category": "support",
+      "essential": false,
+      "description": "For supporting tall plants like tomatoes"
+    },
+    {
+      "name": "Soil Thermometer",
+      "category": "monitoring",
+      "essential": false,
+      "description": "For checking soil temperature"
+    }
+  ]
+}

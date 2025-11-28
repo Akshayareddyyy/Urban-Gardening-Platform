@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Plant Ideas - Urban Gardening</title>
+    <link rel="stylesheet" href="../css/suggestions.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-background">
+            <div class="floating-elements">
+                <div class="floating-plant">🌱</div>
+                <div class="floating-plant">🌿</div>
+                <div class="floating-plant">🌺</div>
+                <div class="floating-plant">🍀</div>
+                <div class="floating-plant">🌸</div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">🤖</span>
+                AI-Powered Plant Recommendations
+            </div>
+            <h1 class="hero-title">Find Your Perfect Plants</h1>
+            <p class="hero-subtitle">Get personalized plant suggestions based on your space, experience level, and preferences. Our AI analyzes your needs to recommend the best plants for your urban garden.</p>
+        </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="container">
+        <div class="progress-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Your Space</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">Get Suggestions</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Grow Guide</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="container">
+        <div class="form-section">
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="header-icon">
+                        <span class="icon-emoji">🌱</span>
+                    </div>
+                    <h2>Tell Us About Your Garden Space</h2>
+                    <p>Help us find the perfect plants for your unique growing environment</p>
+                </div>
+                
+                <form class="modern-form" id="suggestionForm">
+                    <div class="form-section-group">
+                        <h3 class="section-title">
+                            <span class="section-icon">🏠</span>
+                            Space Details
+                        </h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="spaceDescription">
+                                    <span>📝</span>
+                                    Describe Your Space
+                                </label>
+                                <div class="input-wrapper">
+                                    <textarea 
+                                        id="spaceDescription" 
+                                        name="spaceDescription" 
+                                        placeholder="Tell us about your balcony, garden, windowsill, or indoor space. Include size, lighting conditions, and any special features..."
+                                        required
+                                    ></textarea>
+                                    <span class="input-icon">✏️</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="spaceType">
+                                    <span>🏡</span>
+                                    Space Type
+                                </label>
+                                <div class="select-wrapper">
+                                    <select id="spaceType" name="spaceType" required>
+                                        <option value="">Choose your space type...</option>
+                                        <option value="balcony">Balcony</option>
+                                        <option value="backyard">Backyard</option>
+                                        <option value="windowsill">Windowsill</option>
+                                        <option value="indoor">Indoor</option>
+                                        <option value="rooftop">Rooftop</option>
+                                        <option value="patio">Patio</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="experienceLevel">
+                                    <span>⭐</span>
+                                    Experience Level
+                                </label>
+                                <div class="select-wrapper">
+                                    <select id="experienceLevel" name="experienceLevel" required>
+                                        <option value="">Select your experience...</option>
+                                        <option value="beginner">🌱 Beginner - Just starting out</option>
+                                        <option value="intermediate">🌿 Intermediate - Some experience</option>
+                                        <option value="advanced">🌳 Advanced - Very experienced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lightConditions">
+                                    <span>☀️</span>
+                                    Light Conditions
+                                </label>
+                                <div class="select-wrapper">
+                                    <select id="lightConditions" name="lightConditions" required>
+                                        <option value="">Select lighting...</option>
+                                        <option value="full-sun">☀️ Full Sun (6+ hours direct)</option>
+                                        <option value="partial-sun">🌤️ Partial Sun (4-6 hours)</option>
+                                        <option value="partial-shade">⛅ Partial Shade (2-4 hours)</option>
+                                        <option value="full-shade">🌑 Full Shade (less than 2 hours)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section-group">
+                        <h3 class="section-title">
+                            <span class="section-icon">🎯</span>
+                            Preferences
+                        </h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="plantPreferences">
+                                    <span>💚</span>
+                                    Plant Preferences
+                                </label>
+                                <div class="input-wrapper">
+                                    <textarea 
+                                        id="plantPreferences" 
+                                        name="plantPreferences" 
+                                        placeholder="What kind of plants do you like? (flowers, herbs, vegetables, succulents, etc.)"
+                                    ></textarea>
+                                    <span class="input-icon">🌺</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="ai-submit-btn" id="suggestionSubmitBtn">
+                            <div class="btn-content">
+                                <span class="btn-icon">🤖</span>
+                                <span class="btn-text">Get AI Plant Suggestions</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/suggestions.js"></script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Suggestions - Urban Gardening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/suggestions.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>🌱 Urban Gardening</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="suggestions.html" class="active">Plant Ideas</a></li>
+                <li><a href="showcase.html">Showcase</a></li>
+                <li><a href="fertilizer.html">Fertilizer Guide</a></li>
+                <li class="profile-dropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" id="profileDropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Profile
+                        </a>
+                        <a href="#" class="dropdown-item" id="logoutBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="floating-elements">
+                <div class="floating-plant">🌱</div>
+                <div class="floating-plant">🌿</div>
+                <div class="floating-plant">🍃</div>
+                <div class="floating-plant">🌾</div>
+                <div class="floating-plant">🍀</div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">🤖</span>
+                <span>AI-Powered Plant Recommendations</span>
+            </div>
+            <h1 class="hero-title">Discover Your Perfect Plants</h1>
+            <p class="hero-subtitle">Get personalized plant suggestions based on your unique space, climate, and experience level. Let our AI help you create a thriving urban garden.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Step Indicator -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Your Space</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Get Suggestions</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Grow Guide</div>
+                </div>
+            </div>
+
+            <!-- Suggestion Form -->
+            <div class="form-section">
+                <div class="form-card">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <span class="icon-emoji">🏡</span>
+                        </div>
+                        <h2>Tell Us About Your Space</h2>
+                        <p>Help us understand your growing environment</p>
+                    </div>
+                    
+                    <form id="suggestionForm" class="modern-form">
+                        <!-- Space Information -->
+                        <div class="form-section-group">
+                            <h3 class="section-title">
+                                <span class="section-icon">📍</span>
+                                Space Details
+                            </h3>
+                            
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="spaceDescription">Describe Your Growing Space *</label>
+                                    <div class="input-wrapper">
+                                        <textarea id="spaceDescription" name="spaceDescription" required rows="4" 
+                                                  placeholder="Tell us about your space: Is it a sunny balcony, windowsill, rooftop, indoor shelf, or garden bed? How much space do you have? What's the lighting like?"></textarea>
+                                        <div class="input-icon">🌱</div>
+                                    </div>
+                                    <div class="form-error" id="spaceError"></div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="climateDescription">Climate & Location *</label>
+                                    <div class="input-wrapper">
+                                        <textarea id="climateDescription" name="climateDescription" required rows="4" 
+                                                  placeholder="Describe your climate: What's the weather like? Are you in a hot, cold, humid, or dry area? Any seasonal changes we should know about?"></textarea>
+                                        <div class="input-icon">🌤️</div>
+                                    </div>
+                                    <div class="form-error" id="climateError"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences -->
+                        <div class="form-section-group">
+                            <h3 class="section-title">
+                                <span class="section-icon">⚙️</span>
+                                Your Preferences
+                            </h3>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="experienceLevel">Experience Level</label>
+                                    <div class="select-wrapper">
+                                        <select id="experienceLevel" name="experienceLevel">
+                                            <option value="beginner">🌱 Beginner - Just starting out</option>
+                                            <option value="intermediate">🌿 Intermediate - Some experience</option>
+                                            <option value="advanced">🌳 Advanced - Experienced gardener</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="plantPreference">What Would You Like to Grow?</label>
+                                    <div class="select-wrapper">
+                                        <select id="plantPreference" name="plantPreference">
+                                            <option value="any">🌺 Surprise me!</option>
+                                            <option value="edible">🥗 Edible Plants</option>
+                                            <option value="herbs">🌿 Fresh Herbs</option>
+                                            <option value="vegetables">🥕 Vegetables</option>
+                                            <option value="flowers">🌸 Beautiful Flowers</option>
+                                            <option value="decorative">🎋 Decorative Plants</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="ai-submit-btn" id="suggestionSubmitBtn">
+                                <div class="btn-content">
+                                    <span class="btn-icon">🤖</span>
+                                    <span class="btn-text">Get AI Plant Suggestions</span>
+                                    <div class="loading-spinner" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-1 19c.32.04.64.01.95-.04"></path>
+                            </svg>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-container" id="suggestionLoading" style="display: none;">
+                <svg class="loading-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-1 19c.32.04.64.01.95-.04"></path>
+                </svg>
+                <p>Generating your plant suggestions...</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-container" id="suggestionError" style="display: none;">
+                <div class="error-alert">
+                    <h3>Suggestion Error</h3>
+                    <p id="suggestionErrorMessage">Failed to get suggestions. Please try again.</p>
+                </div>
+            </div>
+
+            <!-- Suggestions Results -->
+            <div class="suggestions-results" id="suggestionsResults" style="display: none;">
+                <div class="results-header">
+                    <h2>Recommended Plants for You</h2>
+                    <button class="refresh-btn" id="refreshSuggestions">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                            <path d="M21 3v5h-5"></path>
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                            <path d="M3 21v-5h5"></path>
+                        </svg>
+                        Get New Suggestions
+                    </button>
+                </div>
+                <div class="suggestions-grid" id="suggestionsGrid">
+                    <!-- Suggestions will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Empty Suggestions State -->
+            <div class="empty-suggestions" id="emptySuggestions" style="display: none;">
+                <svg class="empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6"></path>
+                    <path d="M15.8 8.8l-2.6 2.6m0 0l-2.6 2.6m0 0L8 12m3.4 0l2.6-2.6"></path>
+                </svg>
+                <h3>No Suggestions Found</h3>
+                <p>We couldn't find specific plant matches for your criteria. Try rephrasing your climate or space description.</p>
+            </div>
+
+            <!-- Cultivation Guide Section -->
+            <div class="cultivation-section" id="cultivationSection" style="display: none;">
+                <div class="section-divider"></div>
+                
+                <div class="cultivation-header">
+                    <h2>How to Grow Your Plant</h2>
+                    <p>Got a plant in mind from the suggestions above or your own choice? Enter its name below to get detailed cultivation steps.</p>
+                </div>
+
+                <!-- Cultivation Form -->
+                <div class="cultivation-form-container">
+                    <form id="cultivationForm" class="cultivation-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="plantName">Plant Name *</label>
+                                <input type="text" id="plantName" name="plantName" required 
+                                       placeholder="Enter the plant name (e.g., Basil, Tomato, Monstera...)">
+                                <div class="form-error" id="plantNameError"></div>
+                            </div>
+                            <button type="submit" class="submit-btn" id="cultivationSubmitBtn">
+                                <span class="btn-text">Get Growing Guide</span>
+                                <div class="loading-spinner" style="display: none;">
+                                    <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-1 19c.32.04.64.01.95-.04"></path>
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Cultivation Loading -->
+                <div class="loading-container" id="cultivationLoading" style="display: none;">
+                    <svg class="loading-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-1 19c.32.04.64.01.95-.04"></path>
+                    </svg>
+                    <p>Crafting cultivation guide...</p>
+                </div>
+
+                <!-- Cultivation Error -->
+                <div class="error-container" id="cultivationError" style="display: none;">
+                    <div class="error-alert">
+                        <h3>Guide Error</h3>
+                        <p id="cultivationErrorMessage">Failed to generate cultivation guide.</p>
+                    </div>
+                </div>
+
+                <!-- Cultivation Guide Display -->
+                <div class="cultivation-guide" id="cultivationGuide" style="display: none;">
+                    <!-- Guide content will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Welcome Message -->
+            <div class="welcome-message" id="welcomeMessage">
+                <div class="welcome-content">
+                    <svg class="welcome-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                    </svg>
+                    <p>Enter your details above to discover plants tailored for you!</p>
+                </div>
+            </div>
+        </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-brand">
+                        <h3>🌱 Urban Gardening</h3>
+                        <p>Grow green in the city with AI-powered plant recommendations</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="suggestions.html">Plant Ideas</a></li>
+                        <li><a href="showcase.html">Showcase</a></li>
+                        <li><a href="fertilizer.html">Fertilizer Guide</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Growing Tips</a></li>
+                        <li><a href="#">Plant Care</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Newsletter</h4>
+                    <p>Get gardening tips delivered to your inbox</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Urban Gardening. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div class="toast" id="successToast">
+        <div class="toast-content">
+            <svg class="toast-icon success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+            <div class="toast-text">
+                <strong id="successTitle">Success!</strong>
+                <span id="successMessage">Operation completed successfully.</span>
+            </div>
+        </div>
+        <button class="toast-close" onclick="hideToast('successToast')">&times;</button>
+    </div>
+
+    <div class="toast error" id="errorToast">
+        <div class="toast-content">
+            <svg class="toast-icon error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <div class="toast-text">
+                <strong id="errorTitle">Error</strong>
+                <span id="errorMessage">An error occurred.</span>
+            </div>
+        </div>
+        <button class="toast-close" onclick="hideToast('errorToast')">&times;</button>
+    </div>
+
+    <script src="../js/suggestions.js"></script>
+    <script>
+        // Profile dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            
+            if (profileBtn && profileDropdown) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.profile-dropdown')) {
+                        profileDropdown.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Plant Search API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .plant-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            gap: 15px;
+        }
+        .plant-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #f44336;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 5px;
+        }
+        .success {
+            color: #4CAF50;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 5px;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Plant Search API Test</h1>
+        <p><strong>API Key:</strong> sk-rvSg69245eee9c35b9917</p>
+        
+        <div style="margin: 20px 0;">
+            <input type="text" id="searchInput" placeholder="Enter plant name (e.g., rose, orchid, tomato)">
+            <button onclick="testSearch()">Search</button>
+        </div>
+
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_KEY = 'sk-rvSg69245eee9c35b9917';
+        const API_BASE = 'https://perenual.com/api';
+
+        async function testSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+
+            if (!query) {
+                alert('Please enter a plant name');
+                return;
+            }
+
+            // Clear previous results
+            resultsDiv.innerHTML = '';
+            statusDiv.innerHTML = '<p class="loading">🔍 Searching for "' + query + '"...</p>';
+
+            try {
+                const url = `${API_BASE}/species-list?key=${API_KEY}&q=${encodeURIComponent(query)}`;
+                console.log('API URL:', url);
+
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                if (data.data && data.data.length > 0) {
+                    statusDiv.innerHTML = `<p class="success">✅ Found ${data.data.length} plants! (Total in database: ${data.total || 'unknown'})</p>`;
+                    
+                    // Display results
+                    let html = '<h2>Results:</h2>';
+                    data.data.forEach((plant, index) => {
+                        html += `
+                            <div class="plant-item">
+                                ${plant.default_image ? 
+                                    `<img src="${plant.default_image.thumbnail || plant.default_image.regular_url}" alt="${plant.common_name}">` : 
+                                    '<div style="width:100px;height:100px;background:#ddd;border-radius:5px;"></div>'
+                                }
+                                <div>
+                                    <h3>${index + 1}. ${plant.common_name || 'Unknown'}</h3>
+                                    <p><em>${plant.scientific_name ? plant.scientific_name[0] : 'N/A'}</em></p>
+                                    <p><strong>Type:</strong> ${plant.type || 'N/A'} | 
+                                       <strong>Cycle:</strong> ${plant.cycle || 'N/A'} | 
+                                       <strong>Watering:</strong> ${plant.watering || 'N/A'}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultsDiv.innerHTML = html;
+
+                    // Show raw data
+                    resultsDiv.innerHTML += '<h3>Raw API Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    statusDiv.innerHTML = '<p class="error">❌ No plants found for "' + query + '"</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+                resultsDiv.innerHTML = '<pre>' + error.stack + '</pre>';
+            }
+        }
+
+        // Auto-search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testSearch();
+            }
+        });
+
+        // Add test on page load
+        window.addEventListener('load', () => {
+            console.log('Test page loaded');
+            console.log('API Key configured:', API_KEY);
+        });
+    </script>
+</body>
+</html>

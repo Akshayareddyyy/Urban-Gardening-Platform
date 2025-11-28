@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Garden Dashboard - Urban Gardening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/profile-simple.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>🌱 Urban Gardening</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="suggestions.html">Plant Ideas</a></li>
+                <li><a href="showcase.html">Showcase</a></li>
+                <li><a href="fertilizer.html">Fertilizer Guide</a></li>
+                <li class="profile-dropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" id="profileDropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Profile
+                        </a>
+                        <a href="#" class="dropdown-item" id="logoutBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Simple Profile Section -->
+        <section class="simple-profile-section">
+            <div class="profile-container">
+                <div class="profile-card">
+                    <div class="profile-avatar-large">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    
+                    <h1 id="userName">Welcome, Gardener!</h1>
+                    <p class="user-email" id="userEmail">gardener@example.com</p>
+                    
+                    <div class="profile-info">
+                        <div class="info-row">
+                            <span class="info-label">Member Since</span>
+                            <span class="info-value" id="memberSince">2025</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Total Plants</span>
+                            <span class="info-value" id="totalPlants">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Showcases Shared</span>
+                            <span class="info-value" id="totalShowcases">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn-primary" onclick="window.location.href='index.html'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            </svg>
+                            Go to Home
+                        </button>
+                        <button class="btn-secondary" id="logoutBtnProfile">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Profile dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            
+            if (profileBtn && profileDropdown) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.profile-dropdown')) {
+                        profileDropdown.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Load user data
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.name) {
+                document.getElementById('userName').textContent = `Welcome, ${currentUser.name}!`;
+            }
+            if (currentUser.email) {
+                document.getElementById('userEmail').textContent = currentUser.email;
+            }
+            
+            // Load stats
+            const showcasePosts = JSON.parse(localStorage.getItem('showcasePosts') || '[]');
+            document.getElementById('totalShowcases').textContent = showcasePosts.length;
+            
+            // Logout functionality
+            const logoutBtns = document.querySelectorAll('#logoutBtn, #logoutBtnProfile');
+            logoutBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to logout?')) {
+                        localStorage.removeItem('currentUser');
+                        window.location.href = '../../landing.html';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="my-plants">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                    </svg>
+                    My Plants
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Analytics
+                </button>
+                <button class="tab-btn" data-tab="ai-history">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    AI History
+                </button>
+                <button class="tab-btn" data-tab="settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                        <path d="M15.8 8.8l-2.6 2.6m0 0l-2.6 2.6m0 0L8 12m3.4 0l2.6-2.6"></path>
+                    </svg>
+                    Settings
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content active" id="my-plants">
+                <div class="section-header">
+                    <h2>🌿 My Plant Collection</h2>
+                    <button class="add-plant-btn" id="addPlantBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Plant
+                    </button>
+                </div>
+
+                <!-- Plants Grid -->
+                <div class="plants-grid" id="plantsGrid">
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyPlants">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                        </svg>
+                        <h3>No Plants Yet</h3>
+                        <p>Start your garden by adding your first plant!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="analytics">
+                <div class="section-header">
+                    <h2>📊 Garden Analytics</h2>
+                </div>
+
+                <!-- Analytics Charts -->
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <h3>Growth Timeline</h3>
+                        <div class="chart-placeholder" id="growthChart">
+                            <canvas id="timelineCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Plant Categories</h3>
+                        <div class="chart-placeholder" id="categoryChart">
+                            <canvas id="categoryCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card full-width">
+                        <h3>Care Activity Log</h3>
+                        <div class="activity-timeline" id="activityTimeline">
+                            <!-- Activity items will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="ai-history">
+                <div class="section-header">
+                    <h2>🤖 AI Interaction History</h2>
+                </div>
+
+                <div class="ai-history-list" id="aiHistoryList">
+                    <!-- AI history items will be inserted here -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="settings">
+                <div class="section-header">
+                    <h2>⚙️ Account Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3>Profile Information</h3>
+                        <form id="profileForm">
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" id="displayName" placeholder="Your name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="email" placeholder="your@email.com" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea id="bio" rows="3" placeholder="Tell us about your gardening journey..."></textarea>
+                            </div>
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3>Preferences</h3>
+                        <div class="preference-item">
+                            <label class="switch">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <div class="preference-info">
+                                <strong>Email Notifications</strong>
+                                <span>Receive care reminders and updates</span>
+                            </div>
+                        </div>
+                        <div class="preference-item">
+                            <label class="switch">
+                                <input type="checkbox" id="darkMode">
+                                <span class="slider"></span>
+                            </label>
+                            <div class="preference-info">
+                                <strong>Dark Mode</strong>
+                                <span>Switch to dark theme</span>
+                            </div>
+                        </div>
+                        <div class="preference-item">
+                            <label class="switch">
+                                <input type="checkbox" id="metricSystem" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <div class="preference-info">
+                                <strong>Metric System</strong>
+                                <span>Use metric measurements</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Plant Modal -->
+    <div class="modal-overlay" id="addPlantModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Add New Plant</h3>
+                <button class="modal-close" onclick="closeAddPlantModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addPlantForm">
+                    <div class="form-group">
+                        <label>Plant Name *</label>
+                        <input type="text" id="newPlantName" required placeholder="e.g., Tomato, Basil">
+                    </div>
+                    <div class="form-group">
+                        <label>Plant Type</label>
+                        <select id="newPlantType">
+                            <option value="Vegetable">Vegetable</option>
+                            <option value="Herb">Herb</option>
+                            <option value="Fruit">Fruit</option>
+                            <option value="Indoor Plant">Indoor Plant</option>
+                            <option value="Flower">Flower</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="newPlantLocation" placeholder="e.g., Balcony, Windowsill">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="newPlantNotes" rows="3" placeholder="Any special notes..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeAddPlantModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Plant</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/database.js"></script>
+    <script src="../js/ai-engine.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

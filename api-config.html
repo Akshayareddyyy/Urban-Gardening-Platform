@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Search - API Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .config-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .api-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .api-section h2 {
+            color: #1f2937;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            margin-top: 12px;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+
+        .api-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .api-links h3 {
+            color: #374151;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .api-links a {
+            display: block;
+            color: #4CAF50;
+            text-decoration: none;
+            padding: 8px 0;
+            font-weight: 500;
+        }
+
+        .api-links a:hover {
+            text-decoration: underline;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #10b981;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #4b5563;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <h1>🌱 Plant Search API Setup</h1>
+        <p class="subtitle">Configure your plant search API to access 10,000+ plants worldwide</p>
+
+        <div class="api-section">
+            <h2>Step 1: Enter Your API Key</h2>
+            <div class="input-group">
+                <label for="apiKeyInput">Perenual API Key</label>
+                <input 
+                    type="text" 
+                    id="apiKeyInput" 
+                    placeholder="sk-xxxx-your-api-key-here"
+                    autocomplete="off">
+            </div>
+            <button class="btn" onclick="saveApiKey()">💾 Save & Test API Key</button>
+            <button class="btn btn-secondary" onclick="useMockData()">🧪 Use Mock Data (No API Key)</button>
+            
+            <div id="status" class="status"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>Current Status</h2>
+            <ul class="feature-list">
+                <li>Search bar integrated in navigation</li>
+                <li>Real-time search with debouncing</li>
+                <li>Plant details modal with images</li>
+                <li>Add to garden functionality</li>
+                <li>Mobile responsive design</li>
+                <li id="apiStatus">API: Using mock data (10 plants)</li>
+            </ul>
+        </div>
+
+        <div class="api-links">
+            <h3>Get a Free API Key</h3>
+            <a href="https://perenual.com/docs/api" target="_blank">📚 Perenual API Documentation</a>
+            <a href="https://perenual.com/api-key" target="_blank">🔑 Get Free API Key (300 requests/day)</a>
+            <a href="https://trefle.io" target="_blank">🌿 Alternative: Trefle API</a>
+        </div>
+
+        <div class="api-section">
+            <h2>Quick Test</h2>
+            <p style="color: #6b7280; margin-bottom: 12px;">After setting your API key, try searching:</p>
+            <div class="code-block">
+                Try: "tomato", "basil", "rose", "succulent"
+            </div>
+            <button class="btn" onclick="goToSearch()">🔍 Go to Search Page</button>
+        </div>
+    </div>
+
+    <script>
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const status = document.getElementById('status');
+            
+            if (!apiKey) {
+                status.className = 'status error';
+                status.textContent = '❌ Please enter an API key';
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('plantApiKey', apiKey);
+
+            // Test the API
+            testApiKey(apiKey);
+        }
+
+        async function testApiKey(apiKey) {
+            const status = document.getElementById('status');
+            const apiStatus = document.getElementById('apiStatus');
+            
+            status.className = 'status info';
+            status.textContent = '⏳ Testing API key...';
+
+            try {
+                const response = await fetch(`https://perenual.com/api/species-list?key=${apiKey}&q=tomato`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    status.className = 'status success';
+                    status.innerHTML = `
+                        ✅ <strong>API Key Valid!</strong><br>
+                        Found ${data.total || 0} plants in test search.<br>
+                        You can now search 10,000+ plants!
+                    `;
+                    
+                    apiStatus.textContent = `API: Connected (${data.total || '10,000+'} plants available)`;
+                    apiStatus.style.color = '#4CAF50';
+                    apiStatus.style.fontWeight = 'bold';
+                    
+                    // Set in the main app
+                    if (typeof setPlantAPIKey !== 'undefined') {
+                        setPlantAPIKey(apiKey);
+                    }
+                } else {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `
+                    ❌ <strong>API Key Test Failed</strong><br>
+                    ${error.message}<br>
+                    Please check your API key and try again.
+                `;
+            }
+        }
+
+        function useMockData() {
+            const status = document.getElementById('status');
+            const apiStatus = document.getElementById('apiStatus');
+            
+            localStorage.removeItem('plantApiKey');
+            
+            status.className = 'status success';
+            status.innerHTML = `
+                ✅ <strong>Mock Data Mode Activated</strong><br>
+                You can search from 10 pre-loaded plants:<br>
+                Tomato, Basil, Snake Plant, Mint, Pothos, Lettuce, Rose, Lavender, Aloe Vera, Strawberry
+            `;
+            
+            apiStatus.textContent = 'API: Using mock data (10 plants)';
+            apiStatus.style.color = '#6b7280';
+            apiStatus.style.fontWeight = 'normal';
+        }
+
+        function goToSearch() {
+            window.location.href = 'src/html/index.html';
+        }
+
+        // Load saved API key on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('plantApiKey');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+                document.getElementById('status').className = 'status info';
+                document.getElementById('status').textContent = '💾 API key loaded from storage. Click "Save & Test" to verify.';
+            }
+        });
+    </script>
+</body>
+</html>

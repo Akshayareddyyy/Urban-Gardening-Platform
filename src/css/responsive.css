@@ -1,0 +1,593 @@
+/* Responsive CSS for Urban Gardening App */
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+    .container {
+        padding: 0 20px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .planner-container {
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+    }
+    
+    .plant-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    .schedule-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+/* Mobile landscape */
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: white;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 50px;
+        transition: left 0.3s ease;
+        gap: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: var(--card-background);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: var(--shadow);
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-menu ul {
+        flex-direction: column;
+        padding: 20px 0;
+        gap: 0;
+    }
+    
+    .nav-link {
+        display: block;
+        padding: 15px 20px;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    
+    .section {
+        padding: 20px 15px;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .planner-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .planner-tools {
+        order: 2;
+    }
+    
+    .garden-canvas {
+        order: 1;
+    }
+    
+    .tool-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .grid-container {
+        height: 300px;
+    }
+    
+    .search-filters {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .search-filters input,
+    .search-filters select {
+        width: 100%;
+    }
+    
+    .plant-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .plant-card {
+        max-width: none;
+    }
+    
+    .plant-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .schedule-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .schedule-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .plant-selector {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        max-height: 85vh;
+    }
+    
+    #modal-body {
+        padding: 30px 20px 20px;
+    }
+    
+    .plant-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .plant-detail-image {
+        align-self: center;
+    }
+    
+    .plant-specs {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 15px;
+    }
+    
+    .logo h1 {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 15px 10px;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .card {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .dashboard-header {
+        margin-bottom: 30px;
+    }
+    
+    .dashboard-header p {
+        font-size: 1rem;
+    }
+    
+    .temp {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+    }
+    
+    .tool-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tool-btn {
+        padding: 15px;
+        text-align: center;
+    }
+    
+    .grid-container {
+        height: 250px;
+    }
+    
+    .plant-image {
+        height: 150px;
+    }
+    
+    .plant-info {
+        padding: 15px;
+    }
+    
+    .plant-actions {
+        padding: 15px;
+    }
+    
+    .schedule-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .task-item {
+        padding: 10px;
+    }
+    
+    .tracker-container,
+    .schedule-container {
+        padding: 20px;
+    }
+    
+    #growth-chart-canvas {
+        height: 250px;
+    }
+    
+    .growth-entry {
+        padding: 12px;
+    }
+    
+    .entry-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .entry-details {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .modal-content {
+        width: 98%;
+        margin: 5% auto;
+        max-height: 90vh;
+    }
+    
+    #modal-body {
+        padding: 25px 15px 15px;
+    }
+    
+    .close {
+        right: 15px;
+        top: 15px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .companions {
+        justify-content: center;
+    }
+    
+    .success-notification {
+        right: 10px;
+        left: 10px;
+        top: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .nav-container {
+        padding: 0 10px;
+    }
+    
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .section {
+        padding: 10px 5px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat {
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: var(--border-radius);
+    }
+    
+    .plant-info {
+        padding: 12px;
+    }
+    
+    .plant-actions {
+        padding: 12px;
+    }
+    
+    .task-item {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .growth-entry {
+        padding: 10px;
+    }
+    
+    #modal-body {
+        padding: 20px 10px 10px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .hamburger,
+    .btn-primary,
+    .btn-secondary,
+    .delete-task,
+    .delete-entry {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-top: 0;
+    }
+    
+    .section {
+        display: block !important;
+        page-break-before: always;
+    }
+    
+    .section:first-of-type {
+        page-break-before: avoid;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .modal {
+        display: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #000;
+        --secondary-color: #333;
+        --background-color: #fff;
+        --card-background: #fff;
+        --text-primary: #000;
+        --text-secondary: #333;
+        --border-color: #000;
+        --shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .card {
+        border: 2px solid var(--border-color);
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        border: 2px solid var(--border-color);
+    }
+}
+
+/* Search Bar Responsive Styles */
+@media (max-width: 768px) {
+    .search-container {
+        width: 100%;
+        margin: 0;
+        order: 3;
+        margin-top: 15px;
+    }
+
+    .nav-container {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        padding: 6px 10px;
+    }
+
+    .search-input {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    .search-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .search-results {
+        max-height: 400px;
+    }
+
+    .search-result-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .result-image {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-input::placeholder {
+        font-size: 0.85rem;
+    }
+
+    .search-btn {
+        padding: 8px 12px;
+    }
+
+    .result-tags {
+        gap: 6px;
+    }
+
+    .result-tag {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Hero Section Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 400px;
+        padding: 80px 20px 40px;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    .hero-section .search-container {
+        max-width: 100%;
+    }
+
+    .floating-plant {
+        font-size: 2rem;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .modal-content {
+        animation: none;
+    }
+    
+    .success-notification {
+        animation: none;
+    }
+}
+}
