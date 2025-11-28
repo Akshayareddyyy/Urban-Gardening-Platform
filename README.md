@@ -12,7 +12,7 @@ A comprehensive digital platform for urban gardening enthusiasts to plan, track,
 - **Resource Library**: Guides, tips, and best practices
 
 ## Project Structure
-```
+``
 Urban Gradening/
 ├── src/                    # Source code
 │   ├── html/              # HTML files
