@@ -42,11 +42,6 @@ Urban Gradening/
 - JSON for data storage
 - Responsive design for mobile devices
 
-## Video Reference
-The original project concept video is stored in `assets/videos/project-reference-video.mp4` 
-- Duration: 1 minute 52 seconds
-- Resolution: 634x850 (mobile-optimized)
-- Created: September 29, 2025
 
 ## License
 This project is open source and available under the MIT License.
